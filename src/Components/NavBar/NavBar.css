@@ -1,0 +1,30 @@
+.NavBar {
+    position: fixed;   
+    top: 0;             
+    left: 0;           
+    width: 100%;       
+    background-color: #262338;  
+    color: #1e5f62;      
+    z-index: 1000;      
+    padding: 10px 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);  
+  }
+  .container{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 auto;
+  }
+  
+  .NavBar ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 20px;         /* Space between items */
+  }
+  
+  .NavBar a {
+    color: #159b8b;
+    text-decoration: none;
+  }

@@ -13,7 +13,7 @@ body{
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    /* background: url("./img/LoginBg.jpg") no-repeat center center fixed !important; */
+    /* background: url("../LoginForm/img/AbstractBg.jpg") no-repeat center center fixed !important; */
 }
 
 code{
@@ -47,7 +47,7 @@ code{
     padding: 0 60px;
     font-size: 16px;
     background: transparent;
-    color: black;
+    color:#159b8b;
     border:  2px solid rgba(255,255,255,0.2);
     border-radius: 40px;
     font-size: 16px;
