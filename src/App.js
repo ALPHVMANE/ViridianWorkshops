@@ -12,7 +12,7 @@ import DynamicBg from './DynamicBg';
 function App() {
   return (
  
-      <div>
+    <div>
       <NavBar />
       <Routes>
         <Route path="/" element={<Home />} />
