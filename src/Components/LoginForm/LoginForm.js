@@ -13,21 +13,25 @@ const LoginForm = () => {
         const handleSubmit = async (e) => {
             e.preventDefault();
             try {
-            
                 await signInWithEmailAndPassword(auth, email, password);
-                alert("Account created successfully");
+                setHeadingColor('red');
                 setError('');
             } catch (err) {
                 let errorMessage = err.message; // Get the error message
+                if (errorMessage === "Firebase: Error (auth/invalid-email)."){
+                    errorMessage = '/!\\ Invalid Email Format /!\\';
+                }
+                else if (errorMessage === "Firebase: Error (auth/invalid-credential)."){
+                    errorMessage = '/!\\ Wrong Email or Password /!\\';
+                }
                 setError(errorMessage);
             }
         };
     
         return (
-            <div>
             <div className="wrapper">
                 <form onSubmit={handleSubmit}>
-                    <h1>Sign Up</h1>
+                    <h1 style = {{ color: headingColor }}>Login</h1>
                     <div className="input-box">
                         <input
                             type="text"
@@ -44,12 +48,11 @@ const LoginForm = () => {
                             onChange={(e) => setPassword(e.target.value)}
                         />
                     </div>
-                    <button type="submit">Create Account</button>
+                    <button type="submit">Login</button>
                     <div className="register-link">Not a member? <Link to="/signup">Register</Link> </div>
                 </form>
+                <br></br>{error && <p className = "error-message">{error}</p>}
             </div>
-            {error && <p style={{ color: 'red' }}>{error}</p>} {/* Display error in red */}
-        </div>
     );
 }
 

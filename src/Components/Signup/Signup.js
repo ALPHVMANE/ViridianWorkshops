@@ -32,7 +32,6 @@ const Signup = () => {
     };
 
     return (
-        <div>
         <div className="wrapper">
             <form onSubmit={handleSubmit}>
                 <h1>Sign Up</h1>
@@ -69,9 +68,9 @@ const Signup = () => {
                 </div> */}
                 <button type="submit">Create Account</button>
             </form>
+            <br></br>{error && <p className = "error-message">{error}</p>}
         </div>
-        {error && <p style={{ color: 'red' }}>{error}</p>} {/* Display error in red */}
-        </div>
+
     );
 };
 export default Signup;
