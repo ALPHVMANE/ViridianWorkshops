@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import './LoginForm.css';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../Firebase';
 
@@ -9,6 +9,7 @@ const LoginForm = () => {
         const [password, setPassword] = useState('');
         const [error, setError] = useState('');
         const [headingColor, setHeadingColor] = useState('white'); 
+        const navigate = useNavigate(); 
     
         const handleSubmit = async (e) => {
             e.preventDefault();
@@ -16,6 +17,12 @@ const LoginForm = () => {
                 await signInWithEmailAndPassword(auth, email, password);
                 setHeadingColor('red');
                 setError('');
+                if (email.includes('admin')) {
+                    navigate("/admin");
+                }
+                else{
+                    navigate("/home");
+                }
             } catch (err) {
                 let errorMessage = err.message; // Get the error message
                 if (errorMessage === "Firebase: Error (auth/invalid-email)."){

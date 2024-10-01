@@ -2,6 +2,10 @@ import React, { useState } from 'react';
 import './Signup.css';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../Firebase';
+import { getFirestore, setDoc, doc } from "firebase/firestore";
+
+
+const db = getFirestore();
 const Signup = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
