@@ -6,7 +6,7 @@ const Table = ({ users, handleEdit, handleDelete }) => {
       <thead>
         <tr>
           <th>#</th>
-          <th>UserID</th>
+          <th>UserName</th>
           <th>Email</th>
           <th>Date</th>
           <th>Actions</th>
@@ -16,10 +16,9 @@ const Table = ({ users, handleEdit, handleDelete }) => {
         {users.map((user, index) => (
           <tr key={user.id}>
             <td>{index + 1}</td>
-            {/* <td>{user.firstName}</td>
-            <td>{user.lastName}</td> */}
+            {/* <td>{user.firstName}</td> */}
+            <td>{user.username}</td>
             <td>{user.email}</td>
-            <td>{user.salary}</td>
             <td>{user.date}</td>
             <td>
               <button onClick={() => handleEdit(user.id)} className="button muted-button">Edit</button>

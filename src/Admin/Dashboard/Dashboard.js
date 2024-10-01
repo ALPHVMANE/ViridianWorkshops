@@ -7,7 +7,7 @@ import Add from './Add';
 import Edit from './Edit';
 
 import { collection, getDocs, doc, deleteDoc } from 'firebase/firestore';
-import {db} from '../../Firebase'
+import {db} from '../../Config/Firebase'
 
 
 import { usersData } from '../../Database/usersData';

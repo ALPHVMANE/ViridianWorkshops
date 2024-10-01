@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './Signup.css';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../../Firebase';
+import { auth } from '../../Config/Firebase';
 import { getFirestore, setDoc, doc } from "firebase/firestore";
 
 

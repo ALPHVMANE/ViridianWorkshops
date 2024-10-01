@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Swal from 'sweetalert2';
 import { collection, addDoc, doc, setDoc } from 'firebase/firestore';
-import { db } from '../../Firebase';
+import { db } from '../../Config/Firebase';
 import { v4 as uuidv4 } from 'uuid';
 
 const Add = ({ setEmployees, setIsAdding }) => {

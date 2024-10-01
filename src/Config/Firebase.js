@@ -4,13 +4,13 @@ import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyChS7xpoQg3lSguaIDhg2lVYCyhE6E4Lc4",
-  authDomain: "viridianworkshops.firebaseapp.com",
-  projectId: "viridianworkshops",
-  storageBucket: "viridianworkshops.appspot.com",
-  messagingSenderId: "1074265766787",
-  appId: "1:1074265766787:web:00b43da9c58f8e163b94b6",
-  measurementId: "G-VHX11WKGLH"
+  apiKey: process.env.REACT_APP_API_KEY,
+  authDomain: process.env.REACT_APP_AUTH_DOMAIN,
+  projectId: process.env.REACT_APP_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
+  appId: processing.env.REACT_APP_APP_ID,
+  measurementId: processsing.env.REACT_APP_MEASUREMENT_ID
 };
 
 // Initialize Firebase

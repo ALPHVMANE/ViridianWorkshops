@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Swal from 'sweetalert2';
 import { setDoc, doc } from 'firebase/firestore';
-import { db } from '../../Firebase';
+import { db } from '../../Config/Firebase';
 
 const Edit = ({ selectedEmployee, setEmployees, setIsEditing }) => {
   const [firstName, setFirstName] = useState(selectedEmployee.firstName);
