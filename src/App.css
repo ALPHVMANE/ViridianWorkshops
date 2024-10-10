@@ -1,3 +1,10 @@
+/* @font-face {
+  font-family: 'YourFontName';
+  src: url('./Components/Font/Horizon-updated/Horizon-updated/Horizon.otf') format('opentype');
+  font-weight: normal; /* or bold 
+  font-style: normal; /* or italic
+} */
+
 body, html {
   margin: 0;
   padding: 0;

@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
 import './Signup.css';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../../Firebase';
+import { auth } from '../../Config/Firebase';
+import { getFirestore, setDoc, doc } from "firebase/firestore";
+
+
+const db = getFirestore();
 const Signup = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -15,33 +19,26 @@ const Signup = () => {
         //     return setError('Passwords do not match');
         // }
         try {
-            alert("Account created successfully");
+        
             await createUserWithEmailAndPassword(auth, email, password);
-            setHeadingColor('red');
+            alert("Account created successfully");
             setError('');
         } catch (err) {
-            setError(err.Message);
+            let errorMessage = err.message; // Get the error message
+            if (errorMessage === "Firebase: Error (auth/email-already-in-use).") {
+                errorMessage = '/!\\ Email already in use /!\\';
+            }
+            else if (errorMessage === "Firebase: Error (auth/invalid-email)."){
+                errorMessage = '/!\\ Invalid Email Format /!\\';
+            }
+            setError(errorMessage);
         }
-        // const auth = getAuth();
-        // createUserWithEmailAndPassword(auth, email, password)
-        // .then((userCredential) => {
-        //     // Signed up 
-        //     const user = userCredential.user;
-        //     setHeadingColor('red');
-        //     alert("Account created successfully");
-        // })
-        // .catch((error) => {
-        //     const errorCode = error.code;
-        //     const errorMessage = error.message;
-        //     // ..
-        // });
     };
 
     return (
         <div className="wrapper">
-            {error && <p style={{ color: 'red' }}>{error}</p>} {/* Display error in red */}
             <form onSubmit={handleSubmit}>
-                <h1 style={{ color: headingColor }}>Sign Up</h1> {/* Apply heading color */}
+                <h1>Sign Up</h1>
                 <div className="input-box">
                     <input
                         type="text"
@@ -73,9 +70,11 @@ const Signup = () => {
                         required
                     />
                 </div> */}
-                <button type="submit">Signup</button>
+                <button type="submit">Create Account</button>
             </form>
+            <br></br>{error && <p className = "error-message">{error}</p>}
         </div>
+
     );
 };
 export default Signup;

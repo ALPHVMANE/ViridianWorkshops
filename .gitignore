@@ -21,3 +21,8 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+
+#OTHER
+.env
+src/Database/firebase-admin.json
