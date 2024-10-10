@@ -25,4 +25,6 @@ yarn-error.log*
 
 #OTHER
 .env
-src/Database/firebase-admin.json
+/src/Database/firebase-admin.json
+firebase-admin.json
+*.json
