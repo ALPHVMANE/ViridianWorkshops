@@ -6,6 +6,7 @@ import Home from "./Pages/Home";
 import About from "./Pages/About";
 import Signup from "./Pages/Signup/Signup";
 import Admin from "./Pages/Admin";
+import { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import DynamicBg from './DynamicBg';
 import Dashboard from './Admin/Dashboard/Dashboard';
@@ -15,7 +16,9 @@ import Dashboard from './Admin/Dashboard/Dashboard';
     firebase
     firebase-admin
     react-scripts
+    sweetheart2
 */
+
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
@@ -35,11 +38,11 @@ function App() {
         <Route path="/admin" element={<Admin />} />
       </Routes>
       <DynamicBg />
-      {isAuthenticated ? (
+      {/* {isAuthenticated ? (
         <Dashboard setIsAuthenticated={setIsAuthenticated} />
       ) : (
         <Home setIsAuthenticated={setIsAuthenticated} />
-      )}
+      )} */}
     </div>
   );
 }
