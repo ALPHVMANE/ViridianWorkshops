@@ -17,10 +17,10 @@ const NavBar = () => {
         // </nav>
         <nav className="NavBar">
             <div className = "container">
-                <div className = "rightside">
-                    <img src= {vm_logo} width="50px"/>
-                </div>
                 <div className = "leftside">
+                    <img className="logo-nav" src= {vm_logo} width="50px"/>
+                </div>
+                <div className = "rightside">
                 <ul> 
                     <li>
                         <Link to="/">Home</Link>

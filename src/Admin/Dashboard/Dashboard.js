@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
+import './dashboard.css';
 
 import Header from './Header';
 import Table from './Table';
@@ -54,7 +55,7 @@ const Dashboard = ({ setIsAuthenticated }) => {
   };
 
   return (
-    <div className="container">
+    <div className="dashboard-container">
       {!isAdding && !isEditing && (
         <>
           <Header
