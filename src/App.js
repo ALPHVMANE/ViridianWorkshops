@@ -36,6 +36,7 @@ function App() {
         <Route path="/login" element={<LoginForm />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/admin" element={<Admin />} />
+        <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
       <DynamicBg />
       {/* {isAuthenticated ? (
@@ -48,4 +49,3 @@ function App() {
 }
 
 export default App;
-

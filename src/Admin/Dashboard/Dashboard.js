@@ -6,63 +6,53 @@ import Table from './Table';
 import Add from './Add';
 import Edit from './Edit';
 
-import { collection, getDocs, doc, deleteDoc } from 'firebase/firestore';
-import {db} from '../../Config/Firebase'
-
-
-import { usersData } from '../../Database/usersData';
+import { employeesData } from '../../Database/usersData';
 
 const Dashboard = ({ setIsAuthenticated }) => {
-  const [users, setUsers] = useState([]);
-
-  const [selectedUser, setselectedUser] = useState(null);
+  const [employees, setEmployees] = useState(employeesData);
+  const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [isAdding, setIsAdding] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
- useEffect(() => {
-    const fetchUsers = async () => {
-      const querySnapshot = await getDocs(collection(db, 'users'));
-      const usersData = querySnapshot.docs.map(doc => doc.data());
-      setUsers(usersData);
-    };
-
-    fetchUsers();
+  useEffect(() => {
+    const data = JSON.parse(localStorage.getItem('employees_data'));
+    if (data !== null && Object.keys(data).length !== 0) setEmployees(data);
   }, []);
 
   const handleEdit = id => {
-    const [user] = users.filter(user => user.id === id);
+    const [employee] = employees.filter(employee => employee.id === id);
 
-    setselectedUser(user);
+    setSelectedEmployee(employee);
     setIsEditing(true);
   };
 
-  const handleDelete = async id => {
-    try {
-      const [user] = users.filter(user => user.id === id);
-  
-      const docRef = doc(db, 'users', id);
-      await deleteDoc(docRef);
-  
-      Swal.fire({
-        icon: 'success',
-        title: 'Deleted!',
-        text: `${user.firstName} ${user.lastName}'s data has been deleted.`,
-        showConfirmButton: false,
-        timer: 1500,
-      });
-  
-      const usersCopy = users.filter(user => user.id !== id);
-      setUsers(usersCopy);
-    } catch (error) {
-      console.error('Error deleting user: ', error);
-      Swal.fire({
-        icon: 'error',
-        title: 'Error!',
-        text: 'There was an error while deleting the user. Please try again later.',
-      });
-    }
+  const handleDelete = id => {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'No, cancel!',
+    }).then(result => {
+      if (result.value) {
+        const [employee] = employees.filter(employee => employee.id === id);
+
+        Swal.fire({
+          icon: 'success',
+          title: 'Deleted!',
+          text: `${employee.firstName} ${employee.lastName}'s data has been deleted.`,
+          showConfirmButton: false,
+          timer: 1500,
+        });
+
+        const employeesCopy = employees.filter(employee => employee.id !== id);
+        localStorage.setItem('employees_data', JSON.stringify(employeesCopy));
+        setEmployees(employeesCopy);
+      }
+    });
   };
-  
+
   return (
     <div className="container">
       {!isAdding && !isEditing && (
@@ -72,7 +62,7 @@ const Dashboard = ({ setIsAuthenticated }) => {
             setIsAuthenticated={setIsAuthenticated}
           />
           <Table
-            users={users}
+            employees={employees}
             handleEdit={handleEdit}
             handleDelete={handleDelete}
           />
@@ -80,16 +70,16 @@ const Dashboard = ({ setIsAuthenticated }) => {
       )}
       {isAdding && (
         <Add
-          users={users}
-          setUsers={setUsers}
+          employees={employees}
+          setEmployees={setEmployees}
           setIsAdding={setIsAdding}
         />
       )}
       {isEditing && (
         <Edit
-          users={users}
-          selectedUser={selectedUser}
-          setUsers={setUsers}
+          employees={employees}
+          selectedEmployee={selectedEmployee}
+          setEmployees={setEmployees}
           setIsEditing={setIsEditing}
         />
       )}

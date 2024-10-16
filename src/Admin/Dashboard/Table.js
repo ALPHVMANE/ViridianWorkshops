@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Table = ({ users, handleEdit, handleDelete }) => {
+const Table = ({ employees, handleEdit, handleDelete }) => {
   return (
     <table>
       <thead>
@@ -13,7 +13,7 @@ const Table = ({ users, handleEdit, handleDelete }) => {
         </tr>
       </thead>
       <tbody>
-        {users.map((user, index) => (
+        {employees.map((user, index) => (
           <tr key={user.id}>
             <td>{index + 1}</td>
             {/* <td>{user.firstName}</td> */}

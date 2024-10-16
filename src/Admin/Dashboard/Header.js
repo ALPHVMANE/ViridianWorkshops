@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Login from '../../Pages/LoginForm/LoginForm';
+import LoginForm from '../../Pages/LoginForm/LoginForm';
 
 const Header = ({ setIsAdding, setIsAuthenticated }) => {
   return (
@@ -8,7 +8,7 @@ const Header = ({ setIsAdding, setIsAuthenticated }) => {
       <h1>User Management Software</h1>
       <div style={{ marginTop: '30px', marginBottom: '18px' }}>
         <button onClick={() => setIsAdding(true)}>Add Employee</button>
-        <LoginForm setIsAuthenticated={setIsAuthenticated} />
+        {/* <LoginForm setIsAuthenticated={setIsAuthenticated} /> */}
       </div>
     </header>
   );
