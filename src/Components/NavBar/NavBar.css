@@ -1,24 +1,37 @@
+@font-face {
+  font-family: 'HorizonFont'; /* A unique name for the font family */
+  src: url('../Font/Horizon/horizon.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
 .NavBar {
   position: fixed;   
   top: 0;             
   left: 0;           
-  width: 100%;       
+  width: 100%;      
   height: 60px;
   line-height: 60px;
   background-color: #262338;  
   color: #1e5f62;      
   z-index: 1000;
   /* Vertically center content */
-  padding: 0px 7px;      
+  padding: 0px 10px;      
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);  
 }
-
+.leftside{
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+}
 .logo-nav{
   max-height: 100%;
-}
-.leftside{
-  margin-top: 5px;
   align-items: center;
+}
+.company-name{
+  font-family: HorizonFont;
+  font-size: 16px;
+  line-height: 1.2;
+  padding: 0px 10px;
 }
 .rightside{
   align-items: center;

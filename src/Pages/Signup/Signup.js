@@ -1,37 +1,59 @@
 import React, { useState } from 'react';
 import './Signup.css';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../../Config/Firebase';
-import { getFirestore, setDoc, doc } from "firebase/firestore";
+import { auth, db } from '../../Config/Firebase';
+import { ref, set } from 'firebase/database';
 
-
-const db = getFirestore();
 const Signup = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    // const [password2, setPassword2] = useState('');
+    const [username, setUsername] = useState('');
     const [error, setError] = useState('');
-    const [headingColor, setHeadingColor] = useState('white'); 
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
-        // if (password !== password2) {
-        //     return setError('Passwords do not match');
-        // }
+        e.preventDefault();  
         try {
-        
-            await createUserWithEmailAndPassword(auth, email, password);
+            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            const user = userCredential.user;
+
+            await set(ref(db, 'users/' + user.uid), {
+                username: username,   
+                email: email,    
+                createdAt: new Date().toISOString(),
+            });
+
             alert("Account created successfully");
             setError('');
+            setEmail('');
+            setPassword('');
+            setUsername('');
+
         } catch (err) {
-            let errorMessage = err.message; // Get the error message
-            if (errorMessage === "Firebase: Error (auth/email-already-in-use).") {
+            let errorMessage = err.message; 
+           switch (err.code) {
+            case 'auth/email-already-in-use':
                 errorMessage = '/!\\ Email already in use /!\\';
-            }
-            else if (errorMessage === "Firebase: Error (auth/invalid-email)."){
+                break;
+            case 'auth/invalid-email':
                 errorMessage = '/!\\ Invalid Email Format /!\\';
-            }
-            setError(errorMessage);
+                break;
+            case 'auth/weak-password':
+                errorMessage = '/!\\ Weak Password: Must be at least 6 characters /!\\';
+                break;
+            case 'auth/operation-not-allowed':
+                errorMessage = '/!\\ Account creation is disabled /!\\';
+                break;
+            case 'auth/too-many-requests':
+                errorMessage = '/!\\ Too many attempts. Try again later /!\\';
+                break;
+            case 'auth/network-request-failed':
+                errorMessage = '/!\\ Network error. Please check your connection /!\\';
+                break;
+            default:
+                errorMessage = '/!\\ An unexpected error occurred. Please try again /!\\';
+                break;
+        }
+        setError(errorMessage); 
         }
     };
 
@@ -42,39 +64,35 @@ const Signup = () => {
                 <div className="input-box">
                     <input
                         type="text"
+                        placeholder="Username"
+                        value={username} // Bind the username input
+                        onChange={(e) => setUsername(e.target.value)} // Update state when username changes
+                        required
+                    />
+                </div>
+                <div className="input-box">
+                    <input
+                        type="text"
                         placeholder="Email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
+                        required
                     />
                 </div>
-                {/* <div className="input-box">
-                    <input
-                        type="text"
-                        placeholder="Username"
-                    />
-                </div> */}
                 <div className="input-box">
                     <input
                         type="password"
                         placeholder="Password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                    />
-                </div>
-                {/* <div className="input-box">
-                    <input
-                        type="password"
-                        placeholder="Repeat Password"
-                        value={password2}
-                        onChange={(e) => setPassword2(e.target.value)}
                         required
                     />
-                </div> */}
+                </div>
                 <button type="submit">Create Account</button>
             </form>
-            <br></br>{error && <p className = "error-message">{error}</p>}
+            <br></br>{error && <p className="error-message">{error}</p>}
         </div>
-
     );
 };
+
 export default Signup;

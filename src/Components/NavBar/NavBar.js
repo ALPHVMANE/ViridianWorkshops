@@ -19,6 +19,10 @@ const NavBar = () => {
             <div className = "container">
                 <div className = "leftside">
                     <img className="logo-nav" src= {vm_logo} width="50px"/>
+                    <h1 className= "company-name">
+                        Viridian <br></br>
+                        Workshops
+                    </h1>
                 </div>
                 <div className = "rightside">
                 <ul> 
