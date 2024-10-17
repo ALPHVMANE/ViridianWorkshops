@@ -38,7 +38,10 @@ code{
     position: relative;
     margin: 30px 0;
 }
-
+/* .input-group{
+    display: flex;
+    flex-direction: row;
+} */
 .input-box input {
     height: 100%;
     width: 100%;

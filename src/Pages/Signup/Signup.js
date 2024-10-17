@@ -5,6 +5,8 @@ import { auth, db } from '../../Config/Firebase';
 import { ref, set } from 'firebase/database';
 
 const Signup = () => {
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [username, setUsername] = useState('');
@@ -13,16 +15,20 @@ const Signup = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();  
         try {
-            const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            const userCredential = await createUserWithEmailAndPassword(auth, firstName, lastName, email, password);
             const user = userCredential.user;
 
             await set(ref(db, 'users/' + user.uid), {
-                username: username,   
+                username: username,
+                first_name: firstName,
+                last_name: lastName,   
                 email: email,    
                 createdAt: new Date().toISOString(),
             });
 
             alert("Account created successfully");
+            setFirstName('');
+            setLastName('');
             setError('');
             setEmail('');
             setPassword('');
@@ -69,6 +75,26 @@ const Signup = () => {
                         onChange={(e) => setUsername(e.target.value)} // Update state when username changes
                         required
                     />
+                </div>
+                <div className="input-group">
+                    <div className="input-box">
+                        <input
+                        type="text"
+                        placeholder="First Name"
+                        value={firstName}
+                        onChange={(e) => setFirstName(e.target.value)}
+                        required
+                        />
+                    </div>
+                    <div className="input-box">
+                        <input
+                        type="text"
+                        placeholder="Last Name"
+                        value={lastName}
+                        onChange={(e) => setLastName(e.target.value)}
+                        required
+                        />
+                    </div>
                 </div>
                 <div className="input-box">
                     <input
