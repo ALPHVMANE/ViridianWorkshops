@@ -1,49 +1,47 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800&display=swap');
 
-*{
-    margin:0;
-    padding: 0;
-    box-sizing: border-box;
-}
-body{
-    font-family:-'Poppins', sans-serif;
-    -webkit-font-smoothing:antialiased;
-    -moz-osx-font-smoothing:grayscale;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
+.login-container{
+    font-family: 'Poppins', sans-serif; /* Set the font for the container */
+    display: flex; /* Use flexbox */
+    justify-content: center; /* Center content horizontally */
+    align-items: center; /* Center content vertically */
+    height: 100vh; /* Full height of viewport */
+    width: 100vw; /* Full width of viewport *//* Optional */
+    -webkit-font-smoothing: antialiased; /* For smooth fonts */
+    -moz-osx-font-smoothing: grayscale; 
 }
 
-code{
+.login-container code{
     font-family: source-code-pro, Menlo, Monaco, Consoleas, 'Courier New',
     monospace;
 }
 
-.wrapper {
+.login-wrapper {
+    display: flex; /* Add this */
+    flex-direction: column;
     width: 420px;
     background: transparent;
     backdrop-filter: blur(25px);
-    border: 2px solid #7e7b7b;
+    border: 2px solid #1e272e;
     color: white;
     border-radius: 10px;
     padding: 30px 40px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    box-shadow: 0 0 10px rgba(224, 217, 217, 0.5);
 
 }
-.wrapper .input-box {
+.login-wrapper .input-box {
     height: 50px;
     width: 100%;
     position: relative;
-    margin: 30px 0;
+    margin: 20px 0;
 }
 
-.input-box input {
+.login-wrapper .input-box input {
     height: 100%;
-    width: 100%;
+    width: 80%;
     border: none;
     outline: none;
-    padding: 0 60px;
+    padding: 0 40px;
     font-size: 16px;
     background: transparent;
     color: black;
@@ -51,21 +49,21 @@ code{
     border-radius: 40px;
     font-size: 16px;
 }
-.input-box input::placeholder {
+.login-wrapper .input-box input::placeholder {
     color: #ffffff;
 }
-.wrapper .remember_forgotpw {
+.login-wrapper .remember_forgotpw {
     display: flex;
     margin: -15px 0 15px;
     justify-content: space-between;
     font-size: 14.5px;
 }
-.remember_forgotpw label input {
+.login-wrapper .remember_forgotpw label input {
     margin-right: 5px;
     accent-color: #fff;
     color: #fff;
 }
-.remember_forgotpw a {
+.login-wrapper .remember_forgotpw a {
     color: white;
     text-decoration: none;
 }
@@ -73,7 +71,7 @@ code{
     color: white;
     text-decoration: underline;
 }
-.wrapper button {
+.login-wrapper button {
     width: 100%;
     height: 45px;
     background: #fff;
@@ -86,26 +84,26 @@ code{
     font-weight: 700;
     box-shadow: 0 0 10px rgba(0,0,0,0.5);
 }
-.wrapper .register-link {
+.login-wrapper .register-link {
     font-size: 14px;
     text-align: center;
     margin : 20px 0 15px;
 }
-.register-link p{
+.login-wrapper .register-link p{
     color: white;
     text-decoration: none;
 }
-.register-link a{
+.login-wrapper .register-link a{
     color: white;
     text-decoration: none;
     font-weight: 600;
     
 }
-.register-link a:hover {
+.login-wrapper .register-link a:hover {
     text-decoration: underline;
     font-weight: 600;
 }
-.error-message{
+.login-wrapper .error-message{
     color: red;
     font-weight: bold;
     text-align: center;

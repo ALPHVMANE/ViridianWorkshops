@@ -16,7 +16,7 @@ const NavBar = () => {
         //   {role === 'admin' ? AdminNavBar() : UserNavBar()}
         // </nav>
         <nav className="NavBar">
-            <div className = "container">
+            <div className = "navbar-container">
                 <div className = "leftside">
                     <img className="logo-nav" src= {vm_logo} width="50px"/>
                     <h1 className= "company-name">

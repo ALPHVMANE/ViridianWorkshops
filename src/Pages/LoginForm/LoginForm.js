@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './LoginForm.css';
+import '../../Styles/LoginForm.css';
 import { Link, useNavigate } from 'react-router-dom';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../Config/Firebase';
@@ -53,31 +53,33 @@ const LoginForm = () => {
     };
 
     return (
-        <div className="wrapper">
-            <form onSubmit={handleSubmit}>
-                <h1 style={{ color: headingColor }}>Login</h1>
-                <div className="input-box">
-                    <input
-                        type="text"
-                        placeholder="Email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                    />
-                </div>
-                <div className="input-box">
-                    <input
-                        type="password"
-                        placeholder="Password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                    />
-                </div>
-                <button type="submit">Login</button>
-                <div className="register-link">Not a member? <Link to="/signup">Register</Link></div>
-            </form>
-            {error && <p className="error-message">{error}</p>}
+        <div className="login-container">
+            <div className="login-wrapper">
+                <form onSubmit={handleSubmit}>
+                    <h1 style={{ color: headingColor }}>Login</h1>
+                    <div className="input-box">
+                        <input
+                            type="text"
+                            placeholder="Email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                        />
+                    </div>
+                    <div className="input-box">
+                        <input
+                            type="password"
+                            placeholder="Password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                        />
+                    </div>
+                    <button type="submit">Login</button>
+                    <div className="register-link">Not a member? <Link to="/signup">Register</Link></div>
+                </form>
+                {error && <p className="error-message">{error}</p>}
+            </div>
         </div>
     );
 };

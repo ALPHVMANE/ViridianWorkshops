@@ -26,31 +26,7 @@ function App() {
 
   useEffect(() => {
     setIsAuthenticated(JSON.parse(localStorage.getItem('is_authenticated')));
-
-    // Determine the current path and set the appropriate CSS file
-    let cssFileName = '';
-
-    switch (location.pathname) {
-      case '/signup':
-        cssFileName = 'Signup.css';
-        break;
-      case '/dashboard':
-        cssFileName = 'Dashboard.css';
-        break;
-      case '/admin':
-        cssFileName = 'Admin.css';
-        break;
-      default:
-        cssFileName = 'Home.css'; // Default CSS for home
-        break;
-    }
-
-    // Dynamically import the CSS file
-    import(`./styles/${cssFileName}`)
-      .then(() => console.log(`${cssFileName} loaded`))
-      .catch(err => console.error(`Error loading ${cssFileName}:`, err));
-
-  }, [location]); // Dependency on location to re-run when path changes
+  }, []);
 
   return (
     <div>
