@@ -38,25 +38,25 @@ const Signup = () => {
             let errorMessage = err.message; 
            switch (err.code) {
             case 'auth/email-already-in-use':
-                errorMessage = '/!\\ Email already in use /!\\';
+                errorMessage = 'Email already in use';
                 break;
             case 'auth/invalid-email':
-                errorMessage = '/!\\ Invalid Email Format /!\\';
+                errorMessage = 'Invalid Email Format';
                 break;
             case 'auth/weak-password':
-                errorMessage = '/!\\ Weak Password: Must be at least 6 characters /!\\';
+                errorMessage = 'Weak Password: Must be at least 6 characters';
                 break;
             case 'auth/operation-not-allowed':
-                errorMessage = '/!\\ Account creation is disabled /!\\';
+                errorMessage = 'Account creation is disabled';
                 break;
             case 'auth/too-many-requests':
-                errorMessage = '/!\\ Too many attempts. Try again later /!\\';
+                errorMessage = 'Too many attempts. Try again later';
                 break;
             case 'auth/network-request-failed':
-                errorMessage = '/!\\ Network error. Please check your connection /!\\';
+                errorMessage = 'Network error. Please check your connection';
                 break;
             default:
-                errorMessage = '/!\\ An unexpected error occurred. Please try again /!\\';
+                errorMessage = 'An unexpected error occurred. Please try again';
                 break;
         }
         setError(errorMessage); 

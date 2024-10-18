@@ -5,10 +5,11 @@
     display: flex; /* Use flexbox */
     justify-content: center; /* Center content horizontally */
     align-items: center; /* Center content vertically */
-    height: 100vh; /* Full height of viewport */
+    height: 80vh; /* Full height of viewport */
     width: 100vw; /* Full width of viewport *//* Optional */
     -webkit-font-smoothing: antialiased; /* For smooth fonts */
     -moz-osx-font-smoothing: grayscale; 
+    margin-top: 7vh;
 }
 
 .login-container code{
@@ -107,4 +108,5 @@
     color: red;
     font-weight: bold;
     text-align: center;
+    font-size: 13px;
 }

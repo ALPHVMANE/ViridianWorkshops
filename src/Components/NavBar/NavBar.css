@@ -39,7 +39,9 @@
   padding: 0px 10px;
 }
 .rightside{
+  display: flex;
   align-items: center;
+  justify-content: center;
 }
 
 .NavBar ul {

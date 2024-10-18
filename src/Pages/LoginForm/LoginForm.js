@@ -30,22 +30,22 @@ const LoginForm = () => {
             // Handle common Firebase Authentication errors
             switch (err.code) {
                 case 'auth/invalid-email':
-                    errorMessage = '/!\\ Invalid Email Format /!\\';
+                    errorMessage = 'Invalid Email Format';
                     break;
                 case 'auth/wrong-password':
-                    errorMessage = '/!\\ Incorrect Password /!\\';
+                    errorMessage = 'Incorrect Password';
                     break;
                 case 'auth/user-not-found':
-                    errorMessage = '/!\\ No account found with this email /!\\';
+                    errorMessage = 'No account found with this email';
                     break;
                 case 'auth/user-disabled':
-                    errorMessage = '/!\\ User account has been disabled /!\\';
+                    errorMessage = 'User account has been disabled';
                     break;
                 case 'auth/too-many-requests':
-                    errorMessage = '/!\\ Too many failed attempts. Try again later /!\\';
+                    errorMessage = 'Too many failed attempts. Try again later';
                     break;
                 default:
-                    errorMessage = '/!\\ Login failed. Please try again /!\\';
+                    errorMessage = 'Login failed. Please try again';
             }
 
             setError(errorMessage); // Display the appropriate error message

@@ -82,34 +82,36 @@ const Dashboard = ({ setIsAuthenticated }) => {
 
   return (
     <div className="dashboard-container">
-      {!isAdding && !isEditing && (
-        <>
-          <Header
+      <div className="dashboard-wrapper">
+        {!isAdding && !isEditing && (
+          <>
+            <Header
+              setIsAdding={setIsAdding}
+              setIsAuthenticated={setIsAuthenticated}
+            />
+            <Table
+              users={users || []} 
+              handleEdit={handleEdit}
+              handleDelete={handleDelete}
+            />
+          </>
+        )}
+        {isAdding && (
+          <Add
+            users={users || []}
+            setUsers={setUsers}
             setIsAdding={setIsAdding}
-            setIsAuthenticated={setIsAuthenticated}
           />
-          <Table
-            users={users || []} 
-            handleEdit={handleEdit}
-            handleDelete={handleDelete}
+        )}
+        {isEditing && (
+          <Edit
+            users={users || []}
+            selectedUser={selectedUser}
+            setUsers={setUsers}
+            setIsEditing={setIsEditing}
           />
-        </>
-      )}
-      {isAdding && (
-        <Add
-          users={users || []}
-          setUsers={setUsers}
-          setIsAdding={setIsAdding}
-        />
-      )}
-      {isEditing && (
-        <Edit
-          users={users || []}
-          selectedUser={selectedUser}
-          setUsers={setUsers}
-          setIsEditing={setIsEditing}
-        />
-      )}
+        )}
+      </div>
     </div>
   );
 };

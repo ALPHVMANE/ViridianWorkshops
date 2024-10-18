@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import AbstractBg from './Components/img/AbstractBg.jpg';
+import AdminBg from './Components/img/AdminBg.jpg';
 
 const DynamicBg = ({ children }) => {
   const location = useLocation();
@@ -19,6 +20,11 @@ const DynamicBg = ({ children }) => {
           document.body.style.backgroundSize = 'cover'; // Ensure the image covers the body
           document.body.style.backgroundPosition = 'center';
           break;
+        case '/dashboard':
+        document.body.style.backgroundImage = `url(${AdminBg})`;
+        document.body.style.backgroundSize = 'cover'; // Ensure the image covers the body
+        document.body.style.backgroundPosition = 'center';
+        break;
         case '/signup':
         document.body.style.backgroundImage = `url(${AbstractBg})`;
         document.body.style.backgroundSize = 'cover'; // Ensure the image covers the body

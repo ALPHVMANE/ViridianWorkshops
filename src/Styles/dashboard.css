@@ -1,7 +1,115 @@
 .dashboard-container{
-  width: 100%;               
-  min-height: calc(80vh - 60px);  /* Subtract the navbar height (60px) from the viewport height */        
-  background-color: blue;  
-  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif; /* Set the font for the container */
+  display: flex; /* Use flexbox */
+  justify-content: center; /* Center content horizontally */
+  align-items: flex-start;;/* Center content vertically */
+  height: 93vh; /* Full height of viewport */
+  width: 100vw; /* Full width of viewport *//* Optional */
+  -webkit-font-smoothing: antialiased; /* For smooth fonts */
+  -moz-osx-font-smoothing: grayscale; 
+  margin-top: 7vh;
+  overflow: auto;
 }
 
+.dashboard-wrapper {
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+  justify-content: center; /* Center content horizontally */
+  align-items: center;
+  border-radius: 8px;
+  background: transparent;
+    backdrop-filter: blur(10px);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin: 8vh 0;
+}
+
+/* Header Styles */
+.dashboard-wrapper header {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.UsrMngSoftHeader {
+  font-size: 36px;
+  color: #b0d4dd;
+}
+
+.UsrCreateBtn {
+  padding: 10px 15px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+
+.dashboard-wrapper .header button:hover {
+  background-color: #0056b3;
+}
+
+/* Table Styles */
+.dashboard-wrapper .table {
+  width: 100%;
+  border-collapse: collapse;
+  color: blue
+}
+
+.dashboard-wrapper .table th, .table td {
+  padding: 15px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.dashboard-wrapper .table th {
+  background-color: #f2f2f2;
+}
+
+.dashboard-wrapper .table tr:hover {
+  background-color: #f5f5f5;
+}
+
+/* Add/Edit Styles */
+.dashboard-wrapper .add-edit-container {
+  margin-top: 20px;
+}
+
+.dashboard-wrapper .add-edit-container input, .add-edit-container textarea {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.dashboard-wrapper .add-edit-container button {
+  padding: 10px 15px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.dashboard-wrapper .add-edit-container button:hover {
+  background-color: #218838;
+}
+
+/* Loading Styles */
+.dashboard-wrapper .loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  font-size: 18px;
+  color: #777;
+}

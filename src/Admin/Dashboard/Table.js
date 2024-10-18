@@ -2,7 +2,7 @@ import React from 'react';
 
 const Table = ({ users, handleEdit, handleDelete }) => {
   return (
-    <table>
+    <table className="UsrMngTable">
       <thead>
         <tr>
           <th>#</th>

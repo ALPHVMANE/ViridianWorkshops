@@ -4,11 +4,12 @@
   font-weight: normal; /* or bold 
   font-style: normal; /* or italic
 } */
-
+* {
+  box-sizing: border-box; /* Apply box-sizing globally */
+}
 body, html {
   margin: 0;
   padding: 0;
-  height: 100%;
 }
 
 .App {
