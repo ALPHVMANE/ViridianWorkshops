@@ -1,8 +1,8 @@
 import logo from './logo.svg';
 import './App.css';
-import LoginForm from './Pages/LoginForm/LoginForm';  
+import LoginForm from './Pages/LoginForm/LoginForm';
 import NavBar from "./Components/NavBar/NavBar";
-import Home from "./Pages/Home";  
+import Home from "./Pages/Home";
 import About from "./Pages/About";
 import Signup from "./Pages/Signup/Signup";
 import Admin from "./Pages/Admin";
@@ -10,6 +10,7 @@ import { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import DynamicBg from './DynamicBg';
 import Dashboard from './Admin/Dashboard/Dashboard';
+
 /* 
   npm installations:
     react-router-dom
@@ -19,13 +20,37 @@ import Dashboard from './Admin/Dashboard/Dashboard';
     sweetheart2
 */
 
-
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
+  const location = useLocation(); // Get the current location for dynamic CSS loading
 
   useEffect(() => {
     setIsAuthenticated(JSON.parse(localStorage.getItem('is_authenticated')));
-  }, []);
+
+    // Determine the current path and set the appropriate CSS file
+    let cssFileName = '';
+
+    switch (location.pathname) {
+      case '/signup':
+        cssFileName = 'Signup.css';
+        break;
+      case '/dashboard':
+        cssFileName = 'Dashboard.css';
+        break;
+      case '/admin':
+        cssFileName = 'Admin.css';
+        break;
+      default:
+        cssFileName = 'Home.css'; // Default CSS for home
+        break;
+    }
+
+    // Dynamically import the CSS file
+    import(`./styles/${cssFileName}`)
+      .then(() => console.log(`${cssFileName} loaded`))
+      .catch(err => console.error(`Error loading ${cssFileName}:`, err));
+
+  }, [location]); // Dependency on location to re-run when path changes
 
   return (
     <div>
@@ -39,11 +64,6 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
       <DynamicBg />
-      {/* {isAuthenticated ? (
-        <Dashboard setIsAuthenticated={setIsAuthenticated} />
-      ) : (
-        <Home setIsAuthenticated={setIsAuthenticated} />
-      )} test */}
     </div>
   );
 }

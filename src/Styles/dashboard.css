@@ -3,6 +3,5 @@
   min-height: calc(80vh - 60px);  /* Subtract the navbar height (60px) from the viewport height */        
   background-color: blue;  
   box-sizing: border-box;
-
 }
 
