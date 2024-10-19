@@ -78,8 +78,6 @@ const Dashboard = ({ setIsAuthenticated }) => {
     return <p>Loading...</p>; // Show loading while fetching data
   }
 
-  
-
   return (
     <div className="dashboard-container">
       <div className="dashboard-wrapper">
