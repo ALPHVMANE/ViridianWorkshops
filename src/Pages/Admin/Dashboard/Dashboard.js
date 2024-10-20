@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
-import '../../Styles/Dashboard.css';
+import '../../../Styles/Dashboard.css';
 import { ref, onValue } from 'firebase/database'; // Firebase Realtime Database functions
-import { db } from '../../Config/Firebase'; // Import your Firebase database configuration
+import { db } from '../../../Config/Firebase'; // Import your Firebase database configuration
 
 import Header from './Header';
 import Table from './Table';

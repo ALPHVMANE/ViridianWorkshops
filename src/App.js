@@ -1,15 +1,15 @@
 import logo from './logo.svg';
 import './App.css';
-import LoginForm from './Pages/LoginForm/LoginForm';
+import LoginForm from './Pages/Auth/LoginForm/LoginForm';
 import NavBar from "./Components/NavBar/NavBar";
 import Home from "./Pages/Home";
 import About from "./Pages/About";
-import Signup from "./Pages/Signup/Signup";
+import Signup from "./Pages/Auth/Signup/Signup";
 import Admin from "./Pages/Admin";
 import { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import DynamicBg from './DynamicBg';
-import Dashboard from './Admin/Dashboard/Dashboard';
+import Dashboard from './Pages/Admin/Dashboard/Dashboard';
 
 /* 
   npm installations:
