@@ -17,7 +17,6 @@ const LoginForm = () => {
     const navigate = useNavigate();
 
     // useEffect(() => {
-    //     // Check if the user is already logged in
     //     if (loggedIn) {
     //         checkUserRole(user.email); // Check user role
     //     }
