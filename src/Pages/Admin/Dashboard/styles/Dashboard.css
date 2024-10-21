@@ -39,7 +39,7 @@
 }
 .UsrMngSoftHeader {
   font-size: 36px;
-  color: #b0d4dd;
+  color: #9dacaa;
 }
 
 .UsrCreateBtn {
@@ -56,20 +56,21 @@
 .blue { color: #233b49; }
 .yellow { color: #159b8b; }
 
-.dashboard-wrapper th h1 {
+.dashboard-wrapper th {
   font-weight: bold;
   font-size: 1em;
-  text-align: left;
+  text-align: center;
   color: #159b8b;
 }
 
 .dashboard-wrapper td {
   font-weight: normal;
   font-size: 14px;
+  text-align: center;
   -webkit-box-shadow: 0 2px 2px -2px #0E1119;
 	   -moz-box-shadow: 0 2px 2px -2px #0E1119;
 	        box-shadow: 0 2px 2px -2px #0E1119;
-          
+  color:   #9dacaa;        
   
   word-wrap: break-word;
   word-break: break-all; /* This forces text to break if it's too long */

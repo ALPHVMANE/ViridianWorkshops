@@ -1,29 +1,76 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../../../Styles/LoginForm.css';
 import { Link, useNavigate } from 'react-router-dom';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../../Config/Firebase';
+import { getDatabase, ref, get, child } from 'firebase/database';
+import useAuth from '../useAuth';
 
 const LoginForm = () => {
+    const { loggedIn, user } = useAuth();  // Use the useAuth hook to get the login status and user object
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [headingColor, setHeadingColor] = useState('white');
+    const [headingText, setHeadingText] = useState('Login');
+    const [userRole, setUserRole] = useState(null);  // State to track user role
     const navigate = useNavigate();
 
+    // useEffect(() => {
+    //     // Check if the user is already logged in
+    //     if (loggedIn) {
+    //         checkUserRole(user.email); // Check user role
+    //     }
+    // }, [loggedIn, user]); // Run the effect when loggedIn or user changes
+
+    const checkUserRole = async (email) => {
+        const db = getDatabase(); // Initialize the database
+        const usersRef = ref(db, 'users'); 
+
+        try {
+            const snapshot = await get(usersRef); // Fetch all user data
+            if (snapshot.exists()) {
+                const usersData = snapshot.val(); // Get users data
+                
+                // Loop through the users to find the matching email
+                for (const userID in usersData) {
+                    if (usersData[userID].email === email) {
+                        const userRole = usersData[userID].role; // Get the user's role
+                        // Navigate based on user role
+                        if (userRole === 'designer') {
+                            navigate("/designer-home");
+                        } else if (userRole === 'technician') {
+                            navigate("/technician-home");
+                        } else if (userRole === 'admin') {
+                            navigate("/dashboard");
+                        } else if (userRole === 'driver') {
+                            navigate("/driver-home");
+                        } else {
+                            navigate("/home"); // Default navigation if role is not recognized
+                        }
+                        return; // Exit the function after navigating
+                    }
+                }
+                console.log("No role found for the user. Navigating to default home page.");
+                navigate("/home"); // Default navigation if no user matches
+            } else {
+                console.log("No user data found.");
+                navigate("/home"); // Navigate to home if no user data is present
+            }
+        } catch (error) {
+            console.error("Error fetching user data: ", error);
+            navigate("/home"); // Navigate to home on error
+        }
+    };
+    
+    
+    
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await signInWithEmailAndPassword(auth, email, password);
-            setHeadingColor('red'); // Change heading color upon successful login
+            await signInWithEmailAndPassword(auth, email, password); // Change heading color upon successful login
             setError('');
-
-            // Navigate based on whether the user is an admin or regular user
-            if (email.includes('admin')) {
-                navigate("/admin");
-            } else {
-                navigate("/home");
-            }
+            checkUserRole(email);
         } catch (err) {
             let errorMessage = err.message; 
 
@@ -79,6 +126,7 @@ const LoginForm = () => {
                     <div className="register-link">Not a member? <Link to="/signup">Register</Link></div>
                 </form>
                 {error && <p className="error-message">{error}</p>}
+                <p className="heading-text">{headingText}</p>
             </div>
         </div>
     );

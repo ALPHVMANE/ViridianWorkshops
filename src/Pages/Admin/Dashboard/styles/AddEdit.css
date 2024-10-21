@@ -1,0 +1,78 @@
+/* General Container Styles */
+.ae-container {
+    width: 40vw;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Form Heading */
+.ae-container h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* Label Styles */
+.ae-container label {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 5px;
+    display: block;
+}
+
+/* Input Field Styles */
+.ae-container input[type="text"],
+.ae-container input[type="email"],
+.ae-container input[type="number"],
+.ae-container input[type="date"],
+.ae-container select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+/* Input Focus Effect */
+.ae-container input:focus,
+.ae-container select:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+/* Submit Button Styles */
+.ae-container input[type="submit"] {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.ae-container input[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+/* Muted Button Styles */
+.ae-container .muted-button {
+    background-color: #ccc;
+    color: #333;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.muted-button:hover {
+    background-color: #bbb;
+}
+

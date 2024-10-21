@@ -1,0 +1,31 @@
+.profile-header {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid #ccc;
+  }
+  
+  .profile-picture {
+    border-radius: 50%;
+    width: 150px;
+    height: 150px;
+    margin-right: 20px;
+  }
+  
+  .profile-info {
+    flex-grow: 1;
+  }
+  
+  .username {
+    margin: 0;
+    font-size: 24px;
+  }
+  
+  .bio {
+    margin: 5px 0;
+  }
+  
+  .stats {
+    display: flex;
+    justify-content: space-between;
+  }

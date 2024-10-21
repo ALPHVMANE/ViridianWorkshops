@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
-import '../../../Styles/Dashboard.css';
-import { ref, onValue } from 'firebase/database'; // Firebase Realtime Database functions
-import { db } from '../../../Config/Firebase'; // Import your Firebase database configuration
+import './styles/Dashboard.css';
+import { ref, onValue, remove } from 'firebase/database';
+import { db, auth } from '../../../Config/Firebase'; // Ensure to import auth
+import { deleteUser } from 'firebase/auth'; // Import deleteUser
 
 import Header from './Header';
 import Table from './Table';
@@ -10,17 +11,15 @@ import Add from './Add';
 import Edit from './Edit';
 
 const Dashboard = ({ setIsAuthenticated }) => {
-  const [users, setUsers] = useState([]); // State to hold the user data from Firebase
+  const [users, setUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
   const [isAdding, setIsAdding] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [loading, setLoading] = useState(true); // State to manage loading
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Reference to the 'users' node in the Realtime Database
     const usersRef = ref(db, 'users');
 
-    // Fetch users from Firebase Realtime Database
     onValue(usersRef, (snapshot) => {
       const data = snapshot.val();
       if (data) {
@@ -33,11 +32,10 @@ const Dashboard = ({ setIsAuthenticated }) => {
       setLoading(false);
     });
 
-    // Clean up the listener when the component unmounts
     return () => {
       setUsers([]);
     };
-  }, []); // Empty dependency array to run only once on mount
+  }, []);
 
   const handleEdit = id => {
     const [user] = users.filter(user => user.id === id);
@@ -45,7 +43,7 @@ const Dashboard = ({ setIsAuthenticated }) => {
     setIsEditing(true);
   };
 
-  const handleDelete = id => {
+  const handleDelete = async (id) => {
     Swal.fire({
       icon: 'warning',
       title: 'Are you sure?',
@@ -53,29 +51,46 @@ const Dashboard = ({ setIsAuthenticated }) => {
       showCancelButton: true,
       confirmButtonText: 'Yes, delete it!',
       cancelButtonText: 'No, cancel!',
-    }).then(result => {
+    }).then(async (result) => {
       if (result.value) {
         const [user] = users.filter(user => user.id === id);
 
-        Swal.fire({
-          icon: 'success',
-          title: 'Deleted!',
-          text: `${user.firstName} ${user.lastName}'s data has been deleted.`,
-          showConfirmButton: false,
-          timer: 1500,
-        });
+        // Attempt to delete the user from Firebase Auth
+        try {
+          // Assuming that you have a way to get the user object from Firebase Auth
+          const userCredential = await auth.currentUser; // Get the currently logged-in user
+          if (userCredential) {
+            await deleteUser(userCredential); // Delete the user from Firebase Auth
+          }
 
-        const usersCopy = users.filter(user => user.id !== id);
-        setUsers(usersCopy);
-        // Optionally, you can also remove the user from the Firebase database.
-        // const userRef = ref(db2, `users/${id}`);
-        // remove(userRef);
+          // Remove user from Firebase Realtime Database
+          await remove(ref(db, 'users/' + id));
+
+          // Update local state
+          const usersCopy = users.filter(user => user.id !== id);
+          setUsers(usersCopy);
+
+          Swal.fire({
+            icon: 'success',
+            title: 'Deleted!',
+            text: `${user.first_name} ${user.last_name}'s data has been deleted.`,
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        } catch (error) {
+          Swal.fire({
+            icon: 'error',
+            title: 'Error!',
+            text: error.message,
+            showConfirmButton: true,
+          });
+        }
       }
     });
   };
 
   if (loading) {
-    return <p>Loading...</p>; // Show loading while fetching data
+    return <p>Loading...</p>;
   }
 
   return (
@@ -88,7 +103,7 @@ const Dashboard = ({ setIsAuthenticated }) => {
               setIsAuthenticated={setIsAuthenticated}
             />
             <Table
-              users={users || []} 
+              users={users || []}
               handleEdit={handleEdit}
               handleDelete={handleDelete}
             />

@@ -1,19 +1,23 @@
 import React, { useState } from 'react';
 import Swal from 'sweetalert2';
+import { auth, db } from '../../../Config/Firebase'; // Import your firebase config
+import { updateEmail } from 'firebase/auth';
+import { ref, set } from 'firebase/database';
 
-const Edit = ({ employees, selectedEmployee, setEmployees, setIsEditing }) => {
-  const id = selectedEmployee.id;
+const Edit = ({ users, selectedUser, setUsers, setIsEditing }) => { 
+  const id = selectedUser.id;
 
-  const [firstName, setFirstName] = useState(selectedEmployee.firstName);
-  const [lastName, setLastName] = useState(selectedEmployee.lastName);
-  const [email, setEmail] = useState(selectedEmployee.email);
-  const [salary, setSalary] = useState(selectedEmployee.salary);
-  const [date, setDate] = useState(selectedEmployee.date);
+  const [firstName, setFirstName] = useState(selectedUser.first_name);
+  const [lastName, setLastName] = useState(selectedUser.last_name);
+  const [username, setUsername] = useState(selectedUser.username || ''); // New state for username
+  const [email, setEmail] = useState(selectedUser.email);
+  const createdAt = selectedUser.createdAt ? new Date(selectedUser.createdAt).toISOString().slice(0, 10) : '';
+  const [role, setRole] = useState(selectedUser.role || 'user'); // Default to 'user'
 
-  const handleUpdate = e => {
+  const handleUpdate = async (e) => {
     e.preventDefault();
 
-    if (!firstName || !lastName || !email || !salary || !date) {
+    if (!firstName || !lastName || !username || !email) { // Removed date from the check
       return Swal.fire({
         icon: 'error',
         title: 'Error!',
@@ -22,39 +26,61 @@ const Edit = ({ employees, selectedEmployee, setEmployees, setIsEditing }) => {
       });
     }
 
-    const employee = {
+    const updatedUser = {
       id,
-      firstName,
-      lastName,
+      username,
+      first_name: firstName,
+      last_name: lastName,
       email,
-      salary,
-      date,
+      createdAt, // Keep the original date
+      role, // Include the role in the updated user object
     };
 
-    for (let i = 0; i < employees.length; i++) {
-      if (employees[i].id === id) {
-        employees.splice(i, 1, employee);
-        break;
+    try {
+      // Update email in Firebase Auth if it has changed
+      if (email !== selectedUser.email) {
+        await updateEmail(auth.currentUser, email); // Make sure the user is logged in
       }
+
+      // Update the user in the Firebase Realtime Database
+      await set(ref(db, 'users/' + id), updatedUser);
+
+      // Update the user in the users array
+      const updatedUsers = users.map(user => (user.id === id ? updatedUser : user));
+
+      localStorage.setItem('users_data', JSON.stringify(updatedUsers));
+      setUsers(updatedUsers);
+      setIsEditing(false);
+
+      Swal.fire({
+        icon: 'success',
+        title: 'Updated!',
+        text: `${updatedUser.first_name} ${updatedUser.last_name}'s data has been updated.`,
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    } catch (error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error!',
+        text: error.message,
+        showConfirmButton: true,
+      });
     }
-
-    localStorage.setItem('employees_data', JSON.stringify(employees));
-    setEmployees(employees);
-    setIsEditing(false);
-
-    Swal.fire({
-      icon: 'success',
-      title: 'Updated!',
-      text: `${employee.firstName} ${employee.lastName}'s data has been updated.`,
-      showConfirmButton: false,
-      timer: 1500,
-    });
   };
 
   return (
-    <div className="small-container">
+    <div className="ae-container">
       <form onSubmit={handleUpdate}>
-        <h1>Edit Employee</h1>
+        <h1>Edit User</h1>
+        <label htmlFor="username">Username</label> {/* New label for username */}
+        <input
+          id="username"
+          type="text"
+          name="username"
+          value={username} // Bind username state
+          onChange={e => setUsername(e.target.value)} // Update username state
+        />
         <label htmlFor="firstName">First Name</label>
         <input
           id="firstName"
@@ -79,22 +105,27 @@ const Edit = ({ employees, selectedEmployee, setEmployees, setIsEditing }) => {
           value={email}
           onChange={e => setEmail(e.target.value)}
         />
-        <label htmlFor="salary">Salary ($)</label>
-        <input
-          id="salary"
-          type="number"
-          name="salary"
-          value={salary}
-          onChange={e => setSalary(e.target.value)}
-        />
         <label htmlFor="date">Date</label>
         <input
           id="date"
           type="date"
           name="date"
-          value={date}
-          onChange={e => setDate(e.target.value)}
+          value={createdAt} // Show the original date
+          readOnly // Make the date field read-only
         />
+        <label htmlFor="role">Role</label>
+        <select
+          id="role"
+          name="role"
+          value={role}
+          onChange={e => setRole(e.target.value)} // Set the selected role
+        >
+          <option value="user">User</option>
+          <option value="admin">Admin</option>
+          <option value="designer">Designer</option>
+          <option value="technician">Technician</option>
+          <option value="driver">Driver</option>
+        </select>
         <div style={{ marginTop: '30px' }}>
           <input type="submit" value="Update" />
           <input

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { auth } from './firebase';  // Adjust the path based on your setup
+import { auth } from '../../Config/Firebase';  // Adjust the path based on your setup
 import { onAuthStateChanged } from 'firebase/auth';
 
 const useAuth = () => {

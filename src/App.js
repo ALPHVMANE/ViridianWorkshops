@@ -5,11 +5,12 @@ import NavBar from "./Components/NavBar/NavBar";
 import Home from "./Pages/Home";
 import About from "./Pages/About";
 import Signup from "./Pages/Auth/Signup/Signup";
-import Admin from "./Pages/Admin";
+import Admin from "./Pages/Admin/Admin";
+import Dashboard from './Pages/Admin/Dashboard/Dashboard';
+// import ProductListing from './Pages/ProductListing/ProductListing';
 import { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import DynamicBg from './DynamicBg';
-import Dashboard from './Pages/Admin/Dashboard/Dashboard';
 
 /* 
   npm installations:
@@ -38,6 +39,7 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          {/* <Route path="/product-listing" element={<ProductListing />} /> */}
         </Routes>
         <DynamicBg />
     </div>
