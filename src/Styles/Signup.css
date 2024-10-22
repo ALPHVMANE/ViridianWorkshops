@@ -32,10 +32,10 @@
 
 }
 .signup-wrapper .input-box {
-    height: 50px;
+    height: 40px;
     width: 100%;
     position: relative;
-    margin: 20px 0;
+    margin: 10px 0;
 }
 
 .input-box input {

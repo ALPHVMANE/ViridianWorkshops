@@ -3,6 +3,7 @@ import '../../../Styles/Signup.css';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { auth, db } from '../../../Config/Firebase';
 import { ref, set } from 'firebase/database';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Signup = () => {
     const [firstName, setFirstName] = useState('');
@@ -116,6 +117,7 @@ const Signup = () => {
                             required
                         />
                     </div>
+                    <div className="register-link">Already have an account? <Link to="/login">Signin</Link></div>
                     <button type="submit">Create Account</button>
                 </form>
                 <br />

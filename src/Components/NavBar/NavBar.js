@@ -1,101 +1,54 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import './NavBar.css'; 
+import './NavBar.css';
 import vm_logo from '../img/logo.png';
+import SideMenu from '../SideMenu/SideMenu'; // Import the side menu component
 
 const NavBar = () => {
-    // const [role, setRole] = useState('');
-  
-    // useEffect(() => {
-    //   // Fetch the user role (this could be from Firebase, API, etc.)
-    //   const userRole = getUserRole();
-    //   setRole(userRole);
-    // }, []);
+    const [menuActive, setMenuActive] = useState(false);
+    
+    const toggleMenu = () => {
+        setMenuActive(!menuActive);
+        document.body.classList.toggle('opened', !menuActive);
+    };
+
     return (
-        // <nav>
-        //   {role === 'admin' ? AdminNavBar() : UserNavBar()}
-        // </nav>
-        <nav className="NavBar">
-            <div className = "navbar-container">
-                <div className = "leftside">
-                    <img className="logo-nav" src= {vm_logo} width="50px"/>
-                    <h1 className= "company-name">
-                        Viridian <br></br>
-                        Workshops
-                    </h1>
+        <div>
+            <nav className="NavBar">
+                <div className="navbar-container">
+                    <div className="leftside">
+                        <img className="logo-nav" src={vm_logo} width="40px" alt="Viridian Workshops Logo" />
+                        <h1 className="company-name">
+                            Viridian <br /> Workshops
+                        </h1>
+                    </div>
+                    <div className="rightside">
+                        <ul>
+                            <li><Link to="/">Home</Link></li>
+                            <li><Link to="/about">About</Link></li>
+                        </ul>
+                        <svg
+                            className={`ham hamRotate ham4 ${menuActive ? 'active' : ''}`}
+                            viewBox="0 0 100 100"
+                            width="50"
+                            onClick={toggleMenu}
+                        >
+                            <path
+                                className="line top"
+                                d="m 70,33 h -40 c 0,0 -8.5,-0.149796 -8.5,8.5 0,8.649796 8.5,8.5 8.5,8.5 h 20 v -20"
+                            />
+                            <path className="line middle" d="m 70,50 h -40" />
+                            <path
+                                className="line bottom"
+                                d="m 30,67 h 40 c 0,0 8.5,0.149796 8.5,-8.5 0,-8.649796 -8.5,-8.5 -8.5,-8.5 h -20 v 20"
+                            />
+                        </svg>
+                    </div>
                 </div>
-                <div className = "rightside">
-                <ul> 
-                    <li>
-                        <Link to="/">Home</Link>
-                    </li>
-                    <li>
-                        <Link to="/about">About</Link>
-                    </li>
-                    <li>
-                        <Link to="/login">Login</Link> 
-                    </li>
-                    <li>
-                        <Link to="/account">Account</Link> 
-                    </li>
-                </ul>
-                </div>
-            </div>   
-        </nav>
-        );
-    }
-
-    function AdminNavBar(){
-      return (
-        <nav className="NavBar">
-            <div className = "container">
-                <div className = "rightside">
-                    <img src= {vm_logo} width="50px"/>
-                </div>
-                <div className = "leftside">
-                <ul> 
-                    <li>
-                        <Link to="/">Home</Link>
-                    </li>
-                    <li>
-                        <Link to="/about">About</Link>
-                    </li>
-
-                    <li>
-                    <Link to="/account-list">All Accounts</Link>
-                    </li>
-                    <li>
-                    <Link to="/admin-signup">Create Account</Link> 
-                    </li>
-                </ul>
-                </div>
-            </div>   
-        </nav>
-      );
-    }
-
-function UserNavBar(){
-  return (
-    <nav className="NavBar">
-        <div className = "container">
-            <div className = "rightside">
-                <img src= {vm_logo} width="50px"/>
-            </div>
-            <div className = "leftside">
-            <ul> 
-                <li>
-                    <Link to="/">Home</Link>
-                </li>
-                <li>
-                    <Link to="/about">About</Link>
-                </li>
-                <li>
-                    <Link to="/login">Login</Link> 
-                </li>
-            </ul>
-            </div>
-        </div>   
-    </nav>
-  );
+            </nav>
+            <SideMenu menuActive={menuActive} />
+        </div>
+    );
 }
+
 export default NavBar;
