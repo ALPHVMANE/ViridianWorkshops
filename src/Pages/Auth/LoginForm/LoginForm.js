@@ -11,7 +11,7 @@ const LoginForm = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-    const [headingColor, setHeadingColor] = useState('white');
+
     const [userRole, setUserRole] = useState(null);  // State to track user role
     const navigate = useNavigate();
 
@@ -101,7 +101,7 @@ const LoginForm = () => {
         <div className="login-container">
             <div className="login-wrapper">
                 <form onSubmit={handleSubmit}>
-                    <h1 style={{ color: headingColor }}>Sign In</h1>
+                    <h1>Sign In</h1>
                     <div className="input-box">
                         <input
                             type="text"

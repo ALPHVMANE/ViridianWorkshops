@@ -7,6 +7,7 @@ import About from "./Pages/About";
 import Signup from "./Pages/Auth/Signup/Signup";
 import Admin from "./Pages/Admin/Admin";
 import Dashboard from './Pages/Admin/Dashboard/Dashboard';
+import AddProduct from './Pages/Designers/Product/AddProduct'
 // import ProductListing from './Pages/ProductListing/ProductListing';
 import { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
@@ -39,6 +40,7 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="addproduct" element = {<AddProduct />} />
           {/* <Route path="/product-listing" element={<ProductListing />} /> */}
         </Routes>
         <DynamicBg />
