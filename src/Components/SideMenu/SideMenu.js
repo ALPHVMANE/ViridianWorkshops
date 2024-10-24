@@ -41,7 +41,7 @@ const SideMenu = ({ menuActive, toggleMenu }) => {
             }
         });
 
-        // Cleanup on unmount
+        // Cleanup on unmount i dont understand why 
         return () => unsubscribe();
     }, []);
 
