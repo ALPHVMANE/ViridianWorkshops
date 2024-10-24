@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
-import './styles/Dashboard.css';
+import '../../Admin/Dashboard/styles/Dashboard.css';
 import { ref, onValue, remove } from 'firebase/database';
 import { db } from '../../../Config/Firebase'; // Ensure to import db
 

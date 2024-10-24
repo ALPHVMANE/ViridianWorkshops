@@ -19,7 +19,10 @@ const ProductTable = ({ products, handleEdit, handleDelete }) => {
             <td>{index + 1}</td>
             <td>{product.sku || 'N/A'}</td> {/* Display SKU, default to 'N/A' if missing */}
             <td>{product.title || 'N/A'}</td> {/* Default to 'N/A' if missing */}
-            <td>${product.price !== undefined ? product.price.toFixed(2) : 'N/A'}</td> {/* Format price, default to 'N/A' */}
+            <td>
+              {/* Check if price is a valid number before formatting */}
+              {typeof product.price === 'number' ? `$${product.price.toFixed(2)}` : 'N/A'}
+            </td>
             <td>{product.imageUrl || 'N/A'}</td> {/* Default to 'N/A' if missing */}
             <td>
               <button onClick={() => handleEdit(product.sku)} className="button muted-button">Edit</button>

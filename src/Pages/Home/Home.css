@@ -1,0 +1,94 @@
+.homepage-container {
+    background-color: rgb(36,60,76);
+    display: grid;
+    grid-template-columns: 50vw 30vw;  
+    width: 100vw;
+    height: 93vh;
+    margin-top: 7vh;
+    padding: 0 10vw;
+    box-sizing: border-box;
+    align-items: center;
+    text-align: left;
+  }
+  
+  .homepage-text {
+    line-height: 1.15;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    row-gap: 1.75rem;
+    width:100%;
+    box-sizing: border-box;
+  }
+  
+  .homepage-header {
+    font-size: clamp(2rem, 5vw, 3rem); /* Adjusted font size */
+    letter-spacing: -1px;
+    line-height: 1.2; /* Adjust the line-height if needed */
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Limit to 2 lines */
+    -webkit-box-orient: vertical;
+    margin: 0 0;
+  }
+  .homepage-paragraph{
+    padding-right: 12vw;
+  }
+  
+  .homepage-storebtn {
+    padding: 0.75rem 2rem;
+    color: black;
+    background-color: rgb(25,131,122);
+    column-gap: 0.5rem;
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.5;
+    text-align: center;
+    white-space: nowrap;
+    user-select: none;
+    outline: none;
+    border: none;
+    border-radius: 0.25rem;
+    text-transform: unset;
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+    text-decoration: none;
+  }
+  
+  .homepage-storebtn img{
+    padding-left: 0.5vw;
+    height: 10px;
+  }
+  
+  .homepage-images{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .homepage-image {
+    width: 30vw;
+    height: auto;
+  }
+  
+  .homepage-links {
+    width: 3vw;
+    margin-left: 0;
+    padding-left: 0;
+    list-style-type: none; /* Remove bullet points */
+    display: flex; /* Use flexbox for layout */
+    flex-direction: column; /* Arrange links vertically */
+  }
+  
+  .homepage-link {
+    text-decoration: none; /* Remove underline from links */
+    color: inherit; /* Use inherited color */
+    margin: 0.5rem 0; /* Space between links */
+  }
+  
+  .homepage-link img{
+    width:40px;
+    height: 40px;
+  }
