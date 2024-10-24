@@ -90,7 +90,7 @@ const LoginForm = () => {
                     errorMessage = 'Too many failed attempts. Try again later';
                     break;
                 default:
-                    errorMessage = 'Login failed. Please try again';
+                    errorMessage = err.code;
             }
 
             setError(errorMessage); // Display the appropriate error message
