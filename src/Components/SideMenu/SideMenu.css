@@ -18,28 +18,101 @@
 
 .side-menu-content {
     padding: 20px;
-    color: #fff;
-    align-items: center;
-    text-align: center;
-    display: flex;
-    justify-content: center;
 }
 
-.side-menu-content ul {
+.side-menu-content-signedin {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}
+
+/* Heading Styles */
+.side-menu-content h2 {
+    font-size: 1.5em;
+    margin-bottom: 20px;
+}
+
+/* List Styles */
+.side-menu ul {
     list-style-type: none;
     padding: 0;
 }
 
-.side-menu-content ul li {
-    margin-bottom: 15px;
+.side-menu ul li {
+    margin-bottom: 20px;
 }
 
-.side-menu-content ul li a {
+.side-menu ul li a, 
+.side-menu ul li button {
     color: white;
     text-decoration: none;
-    font-size: 18px;
+    font-size: 1.2em;
+    padding: 10px;
+    border-radius: 4px;
+    display: block;
+    width: 100%;
+    text-align: left;
+    transition: background-color 0.3s ease;
 }
 
-.side-menu-content ul li a:hover {
-    text-decoration: underline;
+/* Button Hover Effect */
+.side-menu ul li a:hover, 
+.side-menu ul li button:hover {
+    background-color: #34495e; /* Darker shade on hover */
+}
+
+/* Logout Button Style */
+.side-menu ul li button {
+    background-color: #e74c3c; /* Red color for logout */
+    border: none;
+    cursor: pointer;
+    font-size: 1.2em;
+}
+
+.side-menu ul li button:hover {
+    background-color: #c0392b; /* Darker red on hover */
+}
+
+/* Loading Styles */
+.side-menu-content p {
+    text-align: center;
+    font-size: 1.2em;
+    padding: 20px;
+    color: #ecf0f1;
+}
+
+.side-menu-login-prompt{
+    color: rgb(206, 206, 206);
+    font-size: 1.7em;
+    padding: 20px;
+}
+.side-menu-login-button{
+    text-align: center;
+}
+
+/* Admin-specific styles */
+.side-menu ul li a.admin-link {
+    background-color: #2980b9;
+}
+
+.side-menu ul li a.admin-link:hover {
+    background-color: #3498db;
+}
+
+/* User-specific styles */
+.side-menu ul li a.user-link {
+    background-color: #27ae60;
+}
+
+.side-menu ul li a.user-link:hover {
+    background-color: #2ecc71;
+}
+
+/* Responsive Styling */
+@media (max-width: 600px) {
+    .side-menu {
+        width: 100%; /* Full screen width for small devices */
+    }
 }

@@ -20,10 +20,10 @@ const SideMenu = ({ menuActive, toggleMenu }) => {
                 setCurrentUser(user);
                 const db = getDatabase();
                 const userRef = ref(db, `users/${user.uid}`);
-                setHeadingText(userRef);
                 get(userRef).then((snapshot) => {
                     if (snapshot.exists()) {
                         const data = snapshot.val();
+                        console.log("User data:", data);
                         setUserData(data);
                         // Convert user data values to a string and set it to headingText
                         const userValuesString = Object.values(data).join(', ');
@@ -41,7 +41,7 @@ const SideMenu = ({ menuActive, toggleMenu }) => {
             }
         });
 
-        // Cleanup on unmount i dont understand why 
+        // Cleanup on unmount
         return () => unsubscribe();
     }, []);
 
@@ -75,8 +75,8 @@ const SideMenu = ({ menuActive, toggleMenu }) => {
                 <div className="side-menu-content">
                     <ul>
                         <li>
-                            <h3>Please sign in for side menu access</h3>
-                            <Link to="/login" onClick={toggleMenu}>Sign In</Link>
+                            <h3 className="side-menu-login-prompt">Please sign in for side menu access</h3>
+                            <Link to="/login" onClick={toggleMenu} children className="side-menu-login-button">Sign In</Link>
                         </li>
                     </ul>
                 </div>
@@ -88,16 +88,49 @@ const SideMenu = ({ menuActive, toggleMenu }) => {
     return (
         <div className={`side-menu ${menuActive ? 'active' : ''}`}>
             <div className="side-menu-content-signedin">
-                <ul>
-                    <li>Hello, {userData ? `${userData.firstName} ${userData.lastName}` : currentUser.email}</li>
-                    <li>
-                        <Link to="/account" onClick={toggleMenu}>Account</Link>
-                    </li>
+                <h2 className="side-menu-welcome">Welcome, {userData ? `${userData.first_name} ${userData.last_name}` : currentUser.email}</h2>
+                <ul> 
+                    {/* Conditional Links Based on Role */}
+                    {userData?.role === 'admin' ? (
+                        <>
+                            <li>
+                                <Link to="/dashboard" onClick={toggleMenu}>Admin User Management</Link>
+                            </li>
+                            <li>
+                                <Link to="/admin/settings" onClick={toggleMenu}>Admin Settings</Link>
+                            </li>
+                            {/* <li>
+                                <Link to="/sales" onClick={toggleMenu}>Admin Sales</Link>
+                            </li> */}
+                        </>
+                    ) : userData?.role === 'user' ? (
+                        <>
+                            <li>
+                                <Link to="/account" onClick={toggleMenu}>Account</Link>
+                            </li>
+                            <li>
+                                <Link to="/settings" onClick={toggleMenu}>User Settings</Link>
+                            </li>
+                        </>
+                    ) : userData?.role === 'designer' ? (
+                        <>
+                            <li>
+                                <Link to="/account" onClick={toggleMenu}>Desginer Account</Link>
+                            </li>
+                            <li>
+                                <Link to="/settings" onClick={toggleMenu}>Designer Settings</Link>
+                            </li>
+                        </>
+                    ) : (
+                        <li>
+                            <Link to="/account" onClick={toggleMenu}>Account</Link>
+                        </li>
+                    )}
+
                     <li>
                         <button onClick={handleLogout}>Logout</button>
                     </li>
                 </ul>
-                <p>{headingText}</p>
             </div>
         </div>
     );
