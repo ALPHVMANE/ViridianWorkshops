@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import AbstractBg from './Components/img/AbstractBg.jpg';
 import AdminBg from './Components/img/AdminBg.jpg';
+import DesignerBg from './Components/img/desginer_prodCRUD.jpg'
 
 const DynamicBg = ({ children }) => {
   const location = useLocation();
@@ -20,7 +21,7 @@ const DynamicBg = ({ children }) => {
           document.body.style.backgroundSize = 'cover'; // Ensure the image covers the body
           document.body.style.backgroundPosition = 'center';
           break;
-        case '/dashboard':
+        case '/admin/dashboard':
         document.body.style.backgroundImage = `url(${AdminBg})`;
         document.body.style.backgroundSize = 'cover'; // Ensure the image covers the body
         document.body.style.backgroundPosition = 'center';
@@ -30,6 +31,12 @@ const DynamicBg = ({ children }) => {
         document.body.style.backgroundSize = 'cover'; // Ensure the image covers the body
         document.body.style.backgroundPosition = 'center';
         break;
+        case '/designer/product-view':
+          document.body.style.backgroundImage = `url(${DesignerBg})`;
+          document.body.style.backgroundSize = 'cover'; // Ensure the image covers the body
+          document.body.style.backgroundPosition = 'center';
+          break;
+        
         default:
           document.body.style.backgroundColor = 'white'; // Default background
       }

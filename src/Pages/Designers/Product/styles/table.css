@@ -1,0 +1,125 @@
+.product-container{
+    font-family: 'Poppins', sans-serif; 
+    display: flex;
+    justify-content: center; 
+    align-items: flex-start;
+    height: 93vh;
+    width: 100vw;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale; 
+    margin-top: 7vh;
+    overflow: auto;
+  }
+  
+  .product-wrapper {
+    width: 90vw;
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    justify-content: center; 
+    align-items: center;
+    border-radius: 8px;
+    background: transparent;
+      backdrop-filter: blur(10px);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin: 8vh 0;
+  }
+  
+  /* Header Styles */
+  .product-wrapper header {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  .UsrMngTable{
+    width: 90vw;
+  }
+  .UsrMngSoftHeader {
+    font-size: 36px;
+    color: #9dacaa;
+  }
+  
+  .UsrCreateBtn {
+    padding: 10px 15px;
+    background-color: #19837a ;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  
+  .blue { color: #233b49; }
+  .yellow { color: #159b8b; }
+  
+  .product-wrapper th {
+    font-weight: bold;
+    font-size: 1em;
+    text-align: center;
+    color: #159b8b;
+  }
+  
+  .product-wrapper td {
+    font-weight: normal;
+    font-size: 14px;
+    text-align: center;
+    -webkit-box-shadow: 0 2px 2px -2px #0E1119;
+         -moz-box-shadow: 0 2px 2px -2px #0E1119;
+              box-shadow: 0 2px 2px -2px #0E1119;
+    color:   #9dacaa;        
+    
+    word-wrap: break-word;
+    word-break: break-all; /* This forces text to break if it's too long */
+    overflow: hidden; /* Prevent content from overflowing */
+    text-overflow: ellipsis; /* Adds '...' for truncated content */
+    white-space: normal; /* Allow text to wrap onto multiple lines */
+  }
+  
+  .product-wrapper td, .product-wrapper th {
+    padding-bottom: 2px;
+    padding-top: 2px;
+      /*
+    padding-left:2%;   */
+  }
+  
+  /* Background-color of the odd rows */
+  .product-wrapper tr:nth-child(odd) {
+    background-color: #323C50;
+  }
+  
+  /* Background-color of the even rows */
+  .product-wrapper tr:nth-child(even) {
+    background-color: #2C3446;
+  }
+  
+  .product-wrapper th {
+    background-color: #1F2739;
+  }
+  
+  .product-wrapper td:first-child { }
+  
+  .product-wrapper tr:hover {
+    background-color: #464A52;
+    -webkit-box-shadow: 0 6px 6px -6px #0E1119;
+      -moz-box-shadow: 0 6px 6px -6px #0E1119;
+          box-shadow: 0 6px 6px -6px #0E1119;
+  }
+  
+  /* .product-wrapper td:hover {
+    background-color: #FFF842;
+    color: #403E10;
+    font-weight: bold;
+  
+    box-shadow: #7F7C21 -1px 1px, #7F7C21 -2px 2px, #7F7C21 -3px 3px, #7F7C21 -4px 4px, #7F7C21 -5px 5px, #7F7C21 -6px 6px;
+    transform: translate3d(6px, -6px, 0);
+  
+    transition-delay: 0s;
+      transition-duration: 0.4s;
+      transition-property: all;
+    transition-timing-function: line;
+  } */
+  

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
-import './styles/Dashboard.css';
+import './styles/table.css';
 import { ref, onValue, remove } from 'firebase/database';
 import { db } from '../../../Config/Firebase'; // Ensure to import db
 
@@ -9,7 +9,7 @@ import ProductTable from './ProductTable';
 import AddProduct from './AddProduct'; // Ensure you create this component
 import EditProduct from './EditProduct'; // Ensure you create this component
 
-const ProductDashboard = ({ setIsAuthenticated }) => {
+const ProductDashboard = ({ setIsAuthenticated, designerId }) => { // Add designerId prop
   const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isAdding, setIsAdding] = useState(false);
@@ -26,7 +26,10 @@ const ProductDashboard = ({ setIsAuthenticated }) => {
           id: key,
           ...data[key],
         }));
-        setProducts(productsArray);
+
+        // Filter products to only include those for the logged-in designer
+        const filteredProducts = productsArray.filter(product => product.designerId === designerId);
+        setProducts(filteredProducts);
       }
       setLoading(false);
     });
@@ -34,7 +37,7 @@ const ProductDashboard = ({ setIsAuthenticated }) => {
     return () => {
       setProducts([]);
     };
-  }, []);
+  }, [designerId]); // Add designerId to the dependency array
 
   const handleEdit = id => {
     const [product] = products.filter(product => product.id === id);
