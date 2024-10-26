@@ -36,11 +36,11 @@ const LoginForm = () => {
                         const userRole = usersData[userID].role; // Get the user's role
                         // Navigate based on user role
                         if (userRole === 'designer') {
-                            navigate("/designer-home");
+                            navigate("/designer/product-view");
                         } else if (userRole === 'technician') {
                             navigate("/technician-home");
                         } else if (userRole === 'admin') {
-                            navigate("/dashboard");
+                            navigate("/admin/dashboard");
                         } else if (userRole === 'driver') {
                             navigate("/driver-home");
                         } else {
@@ -90,7 +90,7 @@ const LoginForm = () => {
                     errorMessage = 'Too many failed attempts. Try again later';
                     break;
                 default:
-                    errorMessage = 'Login failed. Please try again';
+                    errorMessage = err.code;
             }
 
             setError(errorMessage); // Display the appropriate error message

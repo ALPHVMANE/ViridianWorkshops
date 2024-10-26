@@ -94,10 +94,10 @@ const SideMenu = ({ menuActive, toggleMenu }) => {
                     {userData?.role === 'admin' ? (
                         <>
                             <li>
-                                <Link to="/dashboard" onClick={toggleMenu}>Admin User Management</Link>
+                                <Link to="/admin/dashboard" onClick={toggleMenu}>User Management</Link>
                             </li>
                             <li>
-                                <Link to="/admin/settings" onClick={toggleMenu}>Admin Settings</Link>
+                                <Link to="/admin/settings" onClick={toggleMenu}>Settings</Link>
                             </li>
                             {/* <li>
                                 <Link to="/sales" onClick={toggleMenu}>Admin Sales</Link>
@@ -115,10 +115,10 @@ const SideMenu = ({ menuActive, toggleMenu }) => {
                     ) : userData?.role === 'designer' ? (
                         <>
                             <li>
-                                <Link to="/account" onClick={toggleMenu}>Desginer Account</Link>
+                                <Link to="/designer/product-view" onClick={toggleMenu}>Product Designs</Link>
                             </li>
                             <li>
-                                <Link to="/settings" onClick={toggleMenu}>Designer Settings</Link>
+                                <Link to="/settings" onClick={toggleMenu}>Settings</Link>
                             </li>
                         </>
                     ) : (

@@ -5,9 +5,9 @@ import NavBar from "./Components/NavBar/NavBar";
 import Home from "./Pages/Home/Home";
 import About from "./Pages/About";
 import Signup from "./Pages/Auth/Signup/Signup";
-import Admin from "./Pages/Admin/Admin";
+
 import Dashboard from './Pages/Admin/Dashboard/Dashboard';
-import ProductView from './Pages/Designers/Product/ProductView';
+import ProductDashboard from './Pages/Designers/Product/ProductView'
 // import ProductListing from './Pages/ProductListing/ProductListing';
 import { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
@@ -38,9 +38,8 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/login" element={<LoginForm />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/admin" element={<Admin />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="view-product" element = {<ProductView />} />
+          <Route path="/admin/dashboard" element={<Dashboard />} />
+          <Route path="/designer/product-view" element = {<ProductDashboard />} />
           {/* <Route path="/product-listing" element={<ProductListing />} /> */}
         </Routes>
         <DynamicBg />

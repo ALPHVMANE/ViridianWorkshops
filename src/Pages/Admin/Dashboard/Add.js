@@ -28,7 +28,8 @@ const Add = ({ users, setUsers, setIsAdding }) => {
 
     try {
       // Create user in Firebase Auth
-      const userCredential = await createUserWithEmailAndPassword(auth, email, 'qwerty77'); //DEFAULT PASSWORD
+      const defaultPassword = process.env.REACT_APP_PWD;
+      const userCredential = await createUserWithEmailAndPassword(auth, email, defaultPassword); //DEFAULT PASSWORD
       const userId = userCredential.user.uid; // Get the user's unique ID
 
       // Prepare user data

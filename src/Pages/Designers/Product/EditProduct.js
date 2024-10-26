@@ -21,7 +21,6 @@ const EditProduct = ({ products, selectedProduct, setProducts, setIsEditing }) =
         showConfirmButton: true,
       });
     }
-
     const updatedProduct = {
       sku,
       title,
@@ -43,6 +42,7 @@ const EditProduct = ({ products, selectedProduct, setProducts, setIsEditing }) =
       // Update local storage or any state management you are using
       localStorage.setItem('products_data', JSON.stringify(updatedProducts));
       setProducts(updatedProducts);
+
       setIsEditing(false);
 
       Swal.fire({
@@ -114,3 +114,4 @@ const EditProduct = ({ products, selectedProduct, setProducts, setIsEditing }) =
 };
 
 export default EditProduct;
+

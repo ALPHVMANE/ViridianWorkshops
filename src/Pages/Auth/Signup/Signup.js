@@ -117,6 +117,18 @@ const Signup = () => {
                             required
                         />
                     </div>
+                    <div className="input-box">
+                        <label htmlFor="role">Role:</label>
+                        <select
+                            id="role"
+                            value={role}
+                            onChange={(e) => setRole(e.target.value)}
+                            required
+                        >
+                            <option value="user">User</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
                     <div className="register-link">Already have an account? <Link to="/login">Signin</Link></div>
                     <button type="submit">Create Account</button>
                 </form>

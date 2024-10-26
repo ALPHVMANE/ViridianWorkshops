@@ -6,10 +6,10 @@ const ProductTable = ({ products, handleEdit, handleDelete }) => {
       <thead>
         <tr>
           <th>#</th>
-          <th>SKU</th> 
+          <th>SKU</th>
           <th>Title</th>
           <th>Price</th>
-          <th>Image URL</th>
+          <th>Images</th> {/* Update to show images */}
           <th>Actions</th>
         </tr>
       </thead>
@@ -19,11 +19,26 @@ const ProductTable = ({ products, handleEdit, handleDelete }) => {
             <td>{index + 1}</td>
             <td>{product.sku || 'N/A'}</td> {/* Display SKU, default to 'N/A' if missing */}
             <td>{product.title || 'N/A'}</td> {/* Default to 'N/A' if missing */}
+
+            <td>$ {product.price !== undefined && typeof product.price === 'number' ? product.price.toFixed(2) : 'N/A'}</td> {/* Format price, default to 'N/A' */}
+
+            {/* Display multiple images */}
             <td>
-              {/* Check if price is a valid number before formatting */}
-              {typeof product.price === 'number' ? `$${product.price.toFixed(2)}` : 'N/A'}
+              {product.images && product.images.length > 0 ? (
+                <div className="image-container">
+                  {product.images.map((imageUrl, i) => (
+                    <img
+                      key={i}
+                      src={imageUrl}
+                      alt={`Product Image ${i + 1}`}
+                      className="product-image"
+                    />
+                  ))}
+                </div>
+              ) : (
+                'N/A'
+              )}
             </td>
-            <td>{product.imageUrl || 'N/A'}</td> {/* Default to 'N/A' if missing */}
             <td>
               <button onClick={() => handleEdit(product.sku)} className="button muted-button">Edit</button>
               <button onClick={() => handleDelete(product.sku)} className="button muted-button">Delete</button>
