@@ -3,7 +3,7 @@ import './App.css';
 import LoginForm from './Pages/Auth/LoginForm/LoginForm';
 import NavBar from "./Components/NavBar/NavBar";
 import Home from "./Pages/Home/Home";
-import About from "./Pages/About";
+import About from "./Pages/About/About";
 import Signup from "./Pages/Auth/Signup/Signup";
 import Admin from "./Pages/Admin/Admin";
 import Dashboard from './Pages/Admin/Dashboard/Dashboard';
