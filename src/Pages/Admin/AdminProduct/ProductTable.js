@@ -9,6 +9,7 @@ const ProductTable = ({ products, handleEdit, handleDelete }) => {
           <th>SKU</th>
           <th>Title</th>
           <th>Price</th>
+          <th>Designer</th>
           <th>Images</th>
           <th>Actions</th>
         </tr>
@@ -22,6 +23,7 @@ const ProductTable = ({ products, handleEdit, handleDelete }) => {
             <td>$ {product.price !== undefined && typeof product.price === 'number' 
               ? product.price.toFixed(2) 
               : 'N/A'}</td>
+            <td>{product.username || 'N/A'}</td>
             <td>
               {product.images && product.images.length > 0 ? (
                 <div className="image-container">

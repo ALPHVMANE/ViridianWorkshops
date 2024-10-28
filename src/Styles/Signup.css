@@ -31,9 +31,10 @@
     box-shadow: 0 0 10px rgba(224, 217, 217, 0.5);
 
 }
+
 .signup-wrapper .input-box {
     height: 40px;
-    width: 100%;
+    width: 80%;
     position: relative;
     margin: 10px 0;
 }
@@ -51,9 +52,11 @@
     border-radius: 40px;
     font-size: 16px;
 }
+
 .input-box input::placeholder {
     color: #ffffff;
 }
+
 .signup-wrapper .remember_forgotpw {
     display: flex;
     margin: -15px 0 15px;
@@ -86,20 +89,22 @@
     font-weight: 700;
     box-shadow: 0 0 10px rgba(0,0,0,0.5);
 }
+
 .signup-wrapper .register-link {
     font-size: 14px;
     text-align: center;
     margin : 20px 0 15px;
 }
+
 .register-link p{
     color: white;
     text-decoration: none;
 }
+
 .register-link a{
     color: white;
     text-decoration: none;
     font-weight: 600;
-    
 }
 .register-link a:hover {
     text-decoration: underline;

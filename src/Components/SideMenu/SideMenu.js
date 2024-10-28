@@ -97,6 +97,9 @@ const SideMenu = ({ menuActive, toggleMenu }) => {
                                 <Link to="/admin/dashboard" onClick={toggleMenu}>User Management</Link>
                             </li>
                             <li>
+                                <Link to="/admin/product-list" onClick={toggleMenu}>Product Designs</Link>
+                            </li>
+                            <li>
                                 <Link to="/admin/settings" onClick={toggleMenu}>Settings</Link>
                             </li>
                             {/* <li>

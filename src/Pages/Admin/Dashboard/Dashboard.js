@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
 import './styles/Dashboard.css';
-import { ref, onValue, remove } from 'firebase/database';
-import { db, auth } from '../../../Config/Firebase'; // Ensure to import auth
-import { deleteUser } from 'firebase/auth'; // Import deleteUser
+import { ref, onValue, remove, get } from 'firebase/database';
+import { db} from '../../../Config/Firebase'; // Ensure to import auth
+import { getAuth } from 'firebase/auth';
+
 
 import Header from './Header';
 import Table from './Table';
@@ -44,50 +45,61 @@ const Dashboard = ({ setIsAuthenticated }) => {
   };
 
   const handleDelete = async (id) => {
-    Swal.fire({
-      icon: 'warning',
-      title: 'Are you sure?',
-      text: "You won't be able to revert this!",
-      showCancelButton: true,
-      confirmButtonText: 'Yes, delete it!',
-      cancelButtonText: 'No, cancel!',
-    }).then(async (result) => {
-      if (result.value) {
-        const [user] = users.filter(user => user.id === id);
+    try {
+        // Check if current user is admin first
+        const auth = getAuth();
+        const currentUser = auth.currentUser;
+        
+        if (!currentUser) {
+            throw new Error('You must be logged in to delete users');
+        }
 
-        // Attempt to delete the user from Firebase Auth
-        try {
-          // Assuming that you have a way to get the user object from Firebase Auth
-          const userCredential = await auth.currentUser; // Get the currently logged-in user
-          if (userCredential) {
-            await deleteUser(userCredential); // Delete the user from Firebase Auth
-          }
+        // Get current user's role from database
+        const currentUserRef = ref(db, `users/${currentUser.uid}`);
+        const snapshot = await get(currentUserRef);
+        
+        if (!snapshot.exists() || snapshot.val().role !== 'admin') {
+            throw new Error('Only admins can delete users');
+        }
 
-          // Remove user from Firebase Realtime Database
-          await remove(ref(db, 'users/' + id));
+        const result = await Swal.fire({
+            icon: 'warning',
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel!',
+        });
 
-          // Update local state
-          const usersCopy = users.filter(user => user.id !== id);
-          setUsers(usersCopy);
+        if (result.value) {
+            const [userToDelete] = users.filter(user => user.id === id);
+            
+            // Simply delete from Realtime Database without checking user status
+            const deleteRef = ref(db, `users/${id}`);
+            await remove(deleteRef);
 
-          Swal.fire({
-            icon: 'success',
-            title: 'Deleted!',
-            text: `${user.first_name} ${user.last_name}'s data has been deleted.`,
-            showConfirmButton: false,
-            timer: 1500,
-          });
-        } catch (error) {
-          Swal.fire({
+            // Update local state
+            const usersCopy = users.filter(user => user.id !== id);
+            setUsers(usersCopy);
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Deleted!',
+                text: `${userToDelete.first_name} ${userToDelete.last_name}'s data has been deleted.`,
+                showConfirmButton: false,
+                timer: 1500,
+            });
+        }
+    } catch (error) {
+        console.error('Delete error:', error);
+        Swal.fire({
             icon: 'error',
             title: 'Error!',
             text: error.message,
             showConfirmButton: true,
-          });
-        }
-      }
-    });
-  };
+        });
+    }
+};
 
   if (loading) {
     return <p>Loading...</p>;

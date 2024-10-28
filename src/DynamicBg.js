@@ -2,7 +2,8 @@ import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import AbstractBg from './Components/img/AbstractBg.jpg';
 import AdminBg from './Components/img/AdminBg.jpg';
-import DesignerBg from './Components/img/desginer_prodCRUD.jpg'
+import DesignerBg from './Components/img/desginer_prodCRUD.jpg';
+import AbtBg from './Components/img/ocean.jpg';
 
 const DynamicBg = ({ children }) => {
   const location = useLocation();
@@ -14,7 +15,9 @@ const DynamicBg = ({ children }) => {
           document.body.style.backgroundColor = 'lightblue';
           break;
         case '/about':
-          document.body.style.backgroundColor = 'lightgreen';
+          document.body.style.backgroundImage = `url(${AbtBg})`;
+          document.body.style.backgroundSize = 'cover'; // Ensure the image covers the body
+          document.body.style.backgroundPosition = 'center';
           break;
         case '/login':
           document.body.style.backgroundImage = `url(${AbstractBg})`;
@@ -22,6 +25,10 @@ const DynamicBg = ({ children }) => {
           document.body.style.backgroundPosition = 'center';
           break;
         case '/admin/dashboard':
+        document.body.style.backgroundImage = `url(${AdminBg})`;
+        document.body.style.backgroundSize = 'cover'; // Ensure the image covers the body
+        document.body.style.backgroundPosition = 'center';
+        case '/admin/product-list':
         document.body.style.backgroundImage = `url(${AdminBg})`;
         document.body.style.backgroundSize = 'cover'; // Ensure the image covers the body
         document.body.style.backgroundPosition = 'center';

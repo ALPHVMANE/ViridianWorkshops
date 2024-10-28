@@ -9,10 +9,18 @@ const AddProduct = ({ setIsAdding }) => {
   const [title, setTitle] = useState('');
   const [price, setPrice] = useState('');
   const [images, setImages] = useState(['']); // Start with one empty image input
-  const [designer, setDesigner] = useState({ firstName: '', lastName: '' });
+  const [designer, setDesigner] = useState({ username: ''});
   const [role, setRole] = useState('');
   const [headingColor, setHeadingColor] = useState('white');
   const [date, setDate] = useState(''); // Date state
+
+  const handleUsernameChange = (newUsername) => {
+    // Update the username in your state/data management system
+    setDesigner(prev => ({
+      ...prev,
+      username: newUsername
+    }));
+  };
 
   // Function to generate a random 6-digit SKU
   const generateSku = () => {
@@ -35,9 +43,9 @@ const AddProduct = ({ setIsAdding }) => {
           console.log('ProductAdd Data:', data);
 
           if (data) {
-            setDesigner({ firstName: data.first_name, lastName: data.last_name });
+            setDesigner({ username: data.username});
             setRole(data.role); // Assuming role is stored in the user object
-            setHeadingColor('green');
+
           } else {
             console.log('No data found for this user.');
             setHeadingColor('red');
@@ -69,6 +77,8 @@ const AddProduct = ({ setIsAdding }) => {
     setImages([...images, '']);
   };
 
+  const parsedPrice = parseFloat(parseFloat(price).toFixed(2));
+
   const handleAddProduct = async (e) => {
     e.preventDefault(); // Prevent default form submission behavior
 
@@ -90,9 +100,9 @@ const AddProduct = ({ setIsAdding }) => {
       await set(newProductRef, {
         sku,
         title,
-        price,
+        price: parsedPrice,
         images,
-        designer: `${designer.firstName} ${designer.lastName}`,
+        designer: `${designer.username}`,
         createdAt: new Date().toISOString(), // Date of product creation
         date, // Set the selected date
       });
@@ -152,9 +162,12 @@ const AddProduct = ({ setIsAdding }) => {
         <input
           id="price"
           type="number"
+          step="0.01" // Allow two decimal places
+          min="0"     // Prevent negative prices
           value={price}
           onChange={(e) => setPrice(e.target.value)}
           required
+          placeholder="0.00"
         />
 
         {/* Date Field */}
@@ -185,22 +198,15 @@ const AddProduct = ({ setIsAdding }) => {
 
         {/* Designer (Readonly for designers) */}
         <div>
-          <label>First Name</label>
+          <label>Username</label>
           <input
             type="text"
-            value={designer.firstName}
-            readOnly={role === 'designer'} // Non-editable if role is 'designer'
+            value={designer.username}
+            onChange={(e) => role === 'admin' ? handleUsernameChange(e.target.value) : null}
+            className={role === 'admin' ? 'editable-input' : 'readonly-input'}
+            readOnly={role !== 'admin'}
           />
         </div>
-        <div>
-          <label>Last Name</label>
-          <input
-            type="text"
-            value={designer.lastName}
-            readOnly={role === 'designer'} // Non-editable if role is 'designer'
-          />
-        </div>
-
         {/* Action Buttons */}
         <div style={{ marginTop: '30px' }}>
           <input type="submit" value="Add" />

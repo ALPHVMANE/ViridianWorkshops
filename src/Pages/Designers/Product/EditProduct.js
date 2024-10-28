@@ -1,19 +1,58 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
-import { getDatabase, ref, set } from 'firebase/database'; // Import Firebase Database
-import '../../Admin/Dashboard/styles/AddEdit.css'; // Assuming you use the same styling
+import { getDatabase, ref, set, onValue } from 'firebase/database';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import '../../Admin/Dashboard/styles/AddEdit.css';
 
 const EditProduct = ({ products, selectedProduct, setProducts, setIsEditing }) => {
-  const [sku, setSku] = useState(selectedProduct.sku); // SKU should remain the same
+  const [sku, setSku] = useState(selectedProduct.sku);
   const [title, setTitle] = useState(selectedProduct.title || '');
   const [price, setPrice] = useState(selectedProduct.price || '');
   const [imageUrl, setImageUrl] = useState(selectedProduct.imageUrl || '');
+  const [designer, setDesigner] = useState({ username: selectedProduct.username || '' });
+  const [role, setRole] = useState('');
+  const [headingColor, setHeadingColor] = useState('white');
+
+  useEffect(() => {
+    const auth = getAuth();
+    const db = getDatabase();
+
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const userId = user.uid;
+        const userRef = ref(db, `users/${userId}`);
+
+        // Listen for changes in user data in real-time
+        onValue(userRef, (snapshot) => {
+          const data = snapshot.val();
+          console.log('ProductEdit Data:', data);
+
+          if (data) {
+            setRole(data.role); // Set user role
+          } else {
+            console.log('No data found for this user.');
+            setHeadingColor('red');
+          }
+        });
+      }
+    });
+
+    // Cleanup subscription on unmount
+    return () => unsubscribe();
+  }, []);
+
+  const handleUsernameChange = (newUsername) => {
+    setDesigner(prev => ({
+      ...prev,
+      username: newUsername
+    }));
+  };
 
   const handleUpdateProduct = async (e) => {
     e.preventDefault();
 
     // Check if all fields are filled
-    if (!sku || !title || !price || !imageUrl) {
+    if (!sku || !title || !price || !imageUrl || !designer.username) {
       return Swal.fire({
         icon: 'error',
         title: 'Error!',
@@ -21,25 +60,27 @@ const EditProduct = ({ products, selectedProduct, setProducts, setIsEditing }) =
         showConfirmButton: true,
       });
     }
+
+    // Parse price to ensure it's a float with 2 decimal places
+    const parsedPrice = parseFloat(parseFloat(price).toFixed(2));
+
     const updatedProduct = {
       sku,
       title,
-      price,
+      price: parsedPrice,
       imageUrl,
+      username: designer.username,
     };
 
     try {
       const db = getDatabase();
-      // Update the product data in the Firebase Realtime Database using SKU as the key
       const productRef = ref(db, `products/${sku}`);
       await set(productRef, updatedProduct);
 
-      // Update the product in the products array
       const updatedProducts = products.map(product =>
         product.sku === sku ? updatedProduct : product
       );
 
-      // Update local storage or any state management you are using
       localStorage.setItem('products_data', JSON.stringify(updatedProducts));
       setProducts(updatedProducts);
 
@@ -65,14 +106,14 @@ const EditProduct = ({ products, selectedProduct, setProducts, setIsEditing }) =
   return (
     <div className="ae-container">
       <form onSubmit={handleUpdateProduct}>
-        <h1>Edit Product</h1>
+        <h1 style={{ color: headingColor }}>Edit Product</h1>
         <label htmlFor="sku">SKU</label>
         <input
           id="sku"
           type="text"
           value={sku}
           onChange={(e) => setSku(e.target.value)}
-          readOnly // Prevent SKU from being changed
+          readOnly
         />
         <label htmlFor="title">Title</label>
         <input
@@ -86,9 +127,12 @@ const EditProduct = ({ products, selectedProduct, setProducts, setIsEditing }) =
         <input
           id="price"
           type="number"
+          step="0.01"
+          min="0"
           value={price}
           onChange={(e) => setPrice(e.target.value)}
           required
+          placeholder="0.00"
         />
         <label htmlFor="imageUrl">Image URL</label>
         <input
@@ -98,6 +142,16 @@ const EditProduct = ({ products, selectedProduct, setProducts, setIsEditing }) =
           onChange={(e) => setImageUrl(e.target.value)}
           required
         />
+        <div>
+          <label>Username</label>
+          <input
+            type="text"
+            value={designer.username}
+            onChange={(e) => role === 'admin' ? handleUsernameChange(e.target.value) : null}
+            className={role === 'admin' ? 'editable-input' : 'readonly-input'}
+            readOnly={role !== 'admin'}
+          />
+        </div>
         <div style={{ marginTop: '30px' }}>
           <input type="submit" value="Update" />
           <input
@@ -114,4 +168,3 @@ const EditProduct = ({ products, selectedProduct, setProducts, setIsEditing }) =
 };
 
 export default EditProduct;
-

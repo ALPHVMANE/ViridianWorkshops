@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
-import './styles/table.css';
+import '../../Designers/Product/styles/table.css';
 import { ref, onValue, remove } from 'firebase/database';
 import { db } from '../../../Config/Firebase'; // Ensure to import db
 
 import ProductHeader from './HeaderProduct';
 import ProductTable from './ProductTable';
-import AddProduct from './AddProduct'; // Ensure you create this component
-import EditProduct from './EditProduct'; // Ensure you create this component
+import AddProduct from '../../Designers/Product/AddProduct'; // Ensure you create this component
+import EditProduct from '../../Designers/Product/EditProduct'; // Ensure you create this component
 
 const styles = {
   productImage: {
@@ -17,7 +17,7 @@ const styles = {
   }
 };
 
-const ProductDashboard = ({ setIsAuthenticated, designerId }) => { // Add designerId prop
+const ProductViewAdmin = ({ setIsAuthenticated, designerId }) => { // Add designerId prop
   const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isAdding, setIsAdding] = useState(false);
@@ -124,4 +124,4 @@ const ProductDashboard = ({ setIsAuthenticated, designerId }) => { // Add design
   );
 };
 
-export default ProductDashboard;
+export default ProductViewAdmin;

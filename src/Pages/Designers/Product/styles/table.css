@@ -100,14 +100,32 @@
     background-color: #1F2739;
   }
   
-  .product-wrapper td:first-child { }
-  
   .product-wrapper tr:hover {
     background-color: #464A52;
     -webkit-box-shadow: 0 6px 6px -6px #0E1119;
       -moz-box-shadow: 0 6px 6px -6px #0E1119;
           box-shadow: 0 6px 6px -6px #0E1119;
   }
+
+.ProductMngTable .image-container {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.ProductMngTable .product-image {
+  max-height: 150px;
+  width: auto;
+  object-fit: contain;
+  margin: 2px;
+}
+
+/* Optional: Add hover effect to make images slightly larger on hover */
+.ProductMngTable .product-image:hover {
+  transform: scale(1.05);
+  transition: transform 0.2s ease;
+}
   
   /* .product-wrapper td:hover {
     background-color: #FFF842;
