@@ -3,18 +3,45 @@ import { ProductList } from './ProductList';
 import Swal from 'sweetalert2';
 import './styles/products.css';
 
+// Custom SweetAlert2 theme configuration
+const Toast = Swal.mixin({
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 3000,
+    timerProgressBar: true,
+    background: '#262338',
+    color: '#fff',
+    didOpen: (toast) => {
+        toast.addEventListener('mouseenter', Swal.stopTimer);
+        toast.addEventListener('mouseleave', Swal.resumeTimer);
+    }
+});
+
+const customSwal = Swal.mixin({
+    customClass: {
+        confirmButton: 'swal2-confirm',
+        cancelButton: 'swal2-cancel',
+        title: 'swal2-title',
+        popup: 'swal2-popup',
+    },
+    background: '#262338',
+    color: '#fff'
+});
+
 export const Products = () => {
     const { products, loading, error } = useContext(ProductList);
 
-    // Handle general error state with SweetAlert2
+    // Handle general error state
     React.useEffect(() => {
         if (error) {
-            Swal.fire({
+            customSwal.fire({
                 icon: 'error',
                 title: 'Oops...',
                 text: `Error loading products: ${error}`,
-                confirmButtonColor: '#2b6cb0',
-                footer: 'Please try refreshing the page'
+                confirmButtonColor: '#159b8b',
+                cancelButtonColor: '#1d5f62',
+                footer: '<span style="color: #888;">Please try refreshing the page</span>'
             });
         }
     }, [error]);
@@ -22,17 +49,12 @@ export const Products = () => {
     // Handle image loading error
     const handleImageError = (e, product) => {
         console.error('Image failed to load:', product.ProdImg);
-        e.target.src = '/api/placeholder/400/400';  // Set placeholder image
+        e.target.src = '/api/placeholder/400/400';
         
-        Swal.mixin({
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true
-        }).fire({
+        Toast.fire({
             icon: 'warning',
             title: `Failed to load image for ${product.ProdName}`,
+            iconColor: '#159b8b',
         });
     };
 
@@ -44,22 +66,38 @@ export const Products = () => {
         );
     }
 
-    // Don't return an error div since we're handling it with SweetAlert2
     if (error) {
         return null; // SweetAlert2 will show the error
     }
+
+    const handleAddToCart = (product) => {
+        Toast.fire({
+            icon: 'success',
+            title: 'Added to Cart!',
+            text: product.ProdName,
+            iconColor: '#159b8b',
+            background: '#262338',
+            color: '#fff'
+        });
+        // Add your cart logic here
+    };
+
+    const showNoProducts = () => {
+        customSwal.fire({
+            icon: 'info',
+            title: 'No Products Available',
+            text: 'Check back soon for new products!',
+            confirmButtonColor: '#159b8b',
+            iconColor: '#159b8b',
+            showCancelButton: false,
+        });
+    };
 
     return (
         <div className="products-page">
             {products.length === 0 ? (
                 <div className="no-products">
-                    {/* Show a nicer message for no products */}
-                    {Swal.fire({
-                        icon: 'info',
-                        title: 'No Products',
-                        text: 'No products are currently available.',
-                        confirmButtonColor: '#2b6cb0'
-                    })}
+                    {showNoProducts()}
                 </div>
             ) : (
                 <div className="product-container">
@@ -82,18 +120,7 @@ export const Products = () => {
                             </div>
                             <button 
                                 className="addcart-btn"
-                                onClick={() => {
-                                    Swal.fire({
-                                        icon: 'success',
-                                        title: 'Added to Cart!',
-                                        text: `${product.ProdName} has been added to your cart`,
-                                        showConfirmButton: false,
-                                        timer: 1500,
-                                        position: 'top-end',
-                                        toast: true
-                                    });
-                                    // Add your cart logic here
-                                }}
+                                onClick={() => handleAddToCart(product)}
                             >
                                 ADD TO CART
                             </button>

@@ -62,6 +62,90 @@
     background-color: #2c5282;
 }
 
+/* sweetalert */
+.swal2-popup {
+    background: #262338 !important;
+    color: #fff !important;
+    border-radius: 12px !important;
+}
+
+.swal2-title {
+    color: #fff !important;
+}
+
+.swal2-html-container {
+    color: #fff !important;
+}
+
+.swal2-confirm {
+    background-color: #159b8b !important;
+    color: white !important;
+    border: none !important;
+    box-shadow: 0 2px 6px rgba(21, 155, 139, 0.3) !important;
+}
+
+.swal2-confirm:hover {
+    background-color: #19837a !important;
+    transform: translateY(-1px);
+}
+
+.swal2-cancel {
+    background-color: #1d5f62 !important;
+    color: white !important;
+    border: none !important;
+}
+
+.swal2-cancel:hover {
+    background-color: #233b49 !important;
+}
+
+.swal2-icon.swal2-warning {
+    border-color: #159b8b !important;
+    color: #159b8b !important;
+}
+
+.swal2-icon.swal2-error {
+    border-color: #1d5f62 !important;
+    color: #1d5f62 !important;
+}
+
+.swal2-icon.swal2-success {
+    border-color: #159b8b !important;
+    color: #159b8b !important;
+}
+
+.swal2-success-circular-line-left,
+.swal2-success-circular-line-right,
+.swal2-success-fix {
+    background-color: #262338 !important;
+}
+
+.swal2-success-ring {
+    border-color: #159b8b !important;
+}
+
+.swal2-timer-progress-bar {
+    background: #159b8b !important;
+}
+
+/* Toast specific styles */
+.swal2-toast {
+    background: #262338 !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+}
+
+.swal2-toast .swal2-title {
+    color: #fff !important;
+    font-size: 1rem !important;
+}
+
+.swal2-toast .swal2-close {
+    color: #fff !important;
+}
+
+.swal2-toast .swal2-content {
+    color: rgba(255, 255, 255, 0.8) !important;
+}
 
 /*************************PRODUCTS VERSION 2***************************/
 
