@@ -11,6 +11,8 @@ import ProductListAdmin from './Pages/Admin/AdminProduct/ProductView';
 import { Products } from './Pages/Explore/ProductDisplay'; // Import Products component
 import { ProductsListProvider } from './Pages/Explore/ProductList';
 import DynamicBg from './DynamicBg';
+import { CartContextProvider } from './Pages/Cart/CartContext';
+import { Cart } from './Pages/Cart/Cart';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
@@ -22,29 +24,32 @@ function App() {
 
   return (
     <ProductsListProvider>
-      <div>
-        <NavBar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/login" element={<LoginForm />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/explore" element={<Products />} /> {/* Add Explore route */}
-          <Route 
-            path="/admin/dashboard" 
-            element={<Dashboard />}
-          />
-          <Route 
-            path="/admin/product-list" 
-            element={<ProductListAdmin />}
-          />
-          <Route 
-            path="/designer/product-list" 
-            element={<ProductDashboard />}
-          />
-        </Routes>
-        <DynamicBg />
-      </div>
+      <CartContextProvider>
+        <div>
+          <NavBar />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/login" element={<LoginForm />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/explore" element={<Products />} /> {/* Add Explore route */}
+            <Route path="/cart-products" element={<Cart/>}></Route>
+            <Route 
+              path="/admin/dashboard" 
+              element={<Dashboard />}
+            />
+            <Route 
+              path="/admin/product-list" 
+              element={<ProductListAdmin />}
+            />
+            <Route 
+              path="/designer/product-list" 
+              element={<ProductDashboard />}
+            />
+          </Routes>
+          <DynamicBg />
+        </div>
+      </CartContextProvider>
     </ProductsListProvider>
   );
 }

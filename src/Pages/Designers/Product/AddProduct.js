@@ -102,9 +102,10 @@ const AddProduct = ({ setIsAdding }) => {
         title,
         price: parsedPrice,
         images,
-        designer: `${designer.username}`,
+        username: designer.username,
         createdAt: new Date().toISOString(), // Date of product creation
-        date, // Set the selected date
+        createdTimestamp: new Date().getTime(),
+        date: date // Add this line to include the date
       });
 
       // Success message

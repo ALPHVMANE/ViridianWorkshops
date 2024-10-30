@@ -36,7 +36,7 @@ export class ProductsListProvider extends React.Component {
                                 ProdName: product.title || '',
                                 ProdPrice: product.price || 0,
                                 ProdImg: product.images[0],
-                                designer: product.designer || '',
+                                designer: product.username || '',
                                 createdAt: product.createdAt || '',
                                 date: product.date || '',
                                 allImages: product.images || []
