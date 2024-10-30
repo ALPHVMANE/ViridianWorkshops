@@ -24,7 +24,7 @@ const NavBar = () => {
                     </div>
                     <div className="rightside">
                         <ul>
-                            <li><Link to="/">Explore</Link></li>
+                            <li><Link to="/explore">Explore</Link></li>
                             <li><Link to="/">Home</Link></li>
                             <li><Link to="/about">About</Link></li>
                         </ul>
