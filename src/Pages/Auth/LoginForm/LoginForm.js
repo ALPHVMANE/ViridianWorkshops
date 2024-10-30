@@ -1,40 +1,34 @@
-import React, { useState, useEffect } from 'react';
 import '../../../Styles/LoginForm.css';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
 import { auth } from '../../../Config/Firebase';
-import { getDatabase, ref, get, child } from 'firebase/database';
+import { getDatabase, ref, get } from 'firebase/database';
 import useAuth from '../useAuth';
 
 const LoginForm = () => {
-    const { loggedIn, user } = useAuth();  // Use the useAuth hook to get the login status and user object
+    const { loggedIn, user } = useAuth();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-
-    const [userRole, setUserRole] = useState(null);  // State to track user role
+    const [resetEmail, setResetEmail] = useState('');
+    const [isResetModalOpen, setIsResetModalOpen] = useState(false);
+    const [resetMessage, setResetMessage] = useState('');
+    const [resetError, setResetError] = useState('');
     const navigate = useNavigate();
 
-    // useEffect(() => {
-    //     if (loggedIn) {
-    //         checkUserRole(user.email); // Check user role
-    //     }
-    // }, [loggedIn, user]); // Run the effect when loggedIn or user changes
-
     const checkUserRole = async (email) => {
-        const db = getDatabase(); // Initialize the database
-        const usersRef = ref(db, 'users'); 
+        const db = getDatabase();
+        const usersRef = ref(db, 'users');
 
         try {
-            const snapshot = await get(usersRef); // Fetch all user data
+            const snapshot = await get(usersRef);
             if (snapshot.exists()) {
-                const usersData = snapshot.val(); // Get users data
+                const usersData = snapshot.val();
                 
-                // Loop through the users to find the matching email
                 for (const userID in usersData) {
                     if (usersData[userID].email === email) {
-                        const userRole = usersData[userID].role; // Get the user's role
-                        // Navigate based on user role
+                        const userRole = usersData[userID].role;
                         if (userRole === 'designer') {
                             navigate("/designer/product-view");
                         } else if (userRole === 'technician') {
@@ -44,35 +38,30 @@ const LoginForm = () => {
                         } else if (userRole === 'driver') {
                             navigate("/driver-home");
                         } else {
-                            navigate("/home"); // Default navigation if role is not recognized
+                            navigate("/home");
                         }
-                        return; // Exit the function after navigating
+                        return;
                     }
                 }
-                console.log("No role found for the user. Navigating to default home page.");
-                navigate("/home"); // Default navigation if no user matches
+                navigate("/home");
             } else {
-                console.log("No user data found.");
-                navigate("/home"); // Navigate to home if no user data is present
+                navigate("/home");
             }
         } catch (error) {
             console.error("Error fetching user data: ", error);
-            navigate("/home"); // Navigate to home on error
+            navigate("/home");
         }
     };
-    
-    
-    
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await signInWithEmailAndPassword(auth, email, password); // Change heading color upon successful login
+            await signInWithEmailAndPassword(auth, email, password);
             setError('');
             checkUserRole(email);
         } catch (err) {
-            let errorMessage = err.message; 
+            let errorMessage = err.message;
 
-            // Handle common Firebase Authentication errors
             switch (err.code) {
                 case 'auth/invalid-email':
                     errorMessage = 'Invalid Email Format';
@@ -93,7 +82,40 @@ const LoginForm = () => {
                     errorMessage = err.code;
             }
 
-            setError(errorMessage); // Display the appropriate error message
+            setError(errorMessage);
+        }
+    };
+
+    const handleResetPassword = async (e) => {
+        e.preventDefault();
+        try {
+            await sendPasswordResetEmail(auth, resetEmail);
+            setResetMessage('Password reset email sent! Please check your inbox.');
+            setResetError('');
+            setTimeout(() => {
+                setIsResetModalOpen(false);
+                setResetMessage('');
+                setResetEmail('');
+            }, 3000);
+        } catch (err) {
+            let errorMessage = 'Failed to send reset email';
+            
+            switch (err.code) {
+                case 'auth/invalid-email':
+                    errorMessage = 'Invalid email format';
+                    break;
+                case 'auth/user-not-found':
+                    errorMessage = 'No account found with this email';
+                    break;
+                case 'auth/too-many-requests':
+                    errorMessage = 'Too many requests. Please try again later';
+                    break;
+                default:
+                    errorMessage = err.message;
+            }
+            
+            setResetError(errorMessage);
+            setResetMessage('');
         }
     };
 
@@ -121,10 +143,57 @@ const LoginForm = () => {
                         />
                     </div>
                     <button type="submit">Login</button>
-                    <div className="register-link">Not a member? <Link to="/signup">Register</Link></div>
+                    <div className="register-link">
+                        Not a member? <Link to="/signup">Register</Link>
+                    </div>
+                    <div className="forgot-password-link">
+                        <button
+                            type="button"
+                            onClick={() => setIsResetModalOpen(true)}
+                            className="text-button"
+                        >
+                            Forgot Password?
+                        </button>
+                    </div>
                 </form>
                 {error && <p className="error-message">{error}</p>}
             </div>
+
+            {/* Password Reset Modal */}
+            {isResetModalOpen && (
+                <div className="modal-overlay">
+                    <div className="modal-content">
+                        <h2>Reset Password</h2>
+                        <form onSubmit={handleResetPassword}>
+                            <div className="input-box">
+                                <input
+                                    type="email"
+                                    placeholder="Enter your email"
+                                    value={resetEmail}
+                                    onChange={(e) => setResetEmail(e.target.value)}
+                                    required
+                                />
+                            </div>
+                            <div className="modal-buttons">
+                                <button type="submit">Send Reset Link</button>
+                                <button 
+                                    type="button" 
+                                    onClick={() => {
+                                        setIsResetModalOpen(false);
+                                        setResetMessage('');
+                                        setResetError('');
+                                        setResetEmail('');
+                                    }}
+                                >
+                                    Cancel
+                                </button>
+                            </div>
+                        </form>
+                        {resetMessage && <p className="success-message">{resetMessage}</p>}
+                        {resetError && <p className="error-message">{resetError}</p>}
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

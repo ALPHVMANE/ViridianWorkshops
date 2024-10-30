@@ -30,6 +30,32 @@
     box-shadow: 0 0 10px rgba(224, 217, 217, 0.5);
 
 }
+
+.modal-content .input-box {
+    height: 50px;
+    width: 80%;
+    position: relative;
+    margin: 20px 0;
+}
+
+.modal-content .input-box input{
+    height: 80%;
+    width: 100%;
+    border: none;
+    outline: none;
+    padding: 0 40px;
+    font-size: 16px;
+    background: transparent;
+    color: rgb(112, 167, 150);
+    border:  2px solid rgba(70, 67, 67, 0.2);
+    border-radius: 40px;
+    font-size: 16px;
+}
+
+.modal-content .input-box input::placeholder{
+    color: rgb(73, 73, 73);
+}
+
 .login-wrapper .input-box {
     height: 50px;
     width: 80%;
@@ -109,4 +135,66 @@
     font-weight: bold;
     text-align: center;
     font-size: 13px;
+}
+
+
+
+/*------------------------------------------------------------------- */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 400px;
+    position: relative;
+}
+
+.modal-content h2 {
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+.text-button {
+    background: none;
+    border: none;
+    color: #0066cc;
+    text-decoration: underline;
+    cursor: pointer;
+    padding: 0;
+    margin: 0.5rem 0;
+}
+
+.text-button:hover {
+    color: #0052a3;
+}
+
+.success-message {
+    color: #28a745;
+    text-align: center;
+    margin-top: 1rem;
+}
+
+.forgot-password-link {
+    text-align: center;
+    margin-top: 0.5rem;
 }

@@ -118,7 +118,7 @@ const SideMenu = ({ menuActive, toggleMenu }) => {
                     ) : userData?.role === 'designer' ? (
                         <>
                             <li>
-                                <Link to="/designer/product-view" onClick={toggleMenu}>Product Designs</Link>
+                                <Link to="/designer/product-list" onClick={toggleMenu}>Product Designs</Link>
                             </li>
                             <li>
                                 <Link to="/settings" onClick={toggleMenu}>Settings</Link>
