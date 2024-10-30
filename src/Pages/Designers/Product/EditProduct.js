@@ -8,7 +8,9 @@ const EditProduct = ({ products, selectedProduct, setProducts, setIsEditing }) =
   const [sku, setSku] = useState(selectedProduct.sku);
   const [title, setTitle] = useState(selectedProduct.title || '');
   const [price, setPrice] = useState(selectedProduct.price || '');
-  const [imageUrl, setImageUrl] = useState(selectedProduct.imageUrl || '');
+  const [images, setImages] = useState(
+    selectedProduct.images || [selectedProduct.imageUrl || '']
+  );
   const [designer, setDesigner] = useState({ username: selectedProduct.username || '' });
   const [role, setRole] = useState('');
   const [headingColor, setHeadingColor] = useState('white');
@@ -22,13 +24,12 @@ const EditProduct = ({ products, selectedProduct, setProducts, setIsEditing }) =
         const userId = user.uid;
         const userRef = ref(db, `users/${userId}`);
 
-        // Listen for changes in user data in real-time
         onValue(userRef, (snapshot) => {
           const data = snapshot.val();
           console.log('ProductEdit Data:', data);
 
           if (data) {
-            setRole(data.role); // Set user role
+            setRole(data.role);
           } else {
             console.log('No data found for this user.');
             setHeadingColor('red');
@@ -37,7 +38,6 @@ const EditProduct = ({ products, selectedProduct, setProducts, setIsEditing }) =
       }
     });
 
-    // Cleanup subscription on unmount
     return () => unsubscribe();
   }, []);
 
@@ -48,27 +48,37 @@ const EditProduct = ({ products, selectedProduct, setProducts, setIsEditing }) =
     }));
   };
 
+  // Handle image URL changes
+  const handleImageChange = (index, e) => {
+    const newImages = [...images];
+    newImages[index] = e.target.value;
+    setImages(newImages);
+  };
+
+  // Add a new image input field
+  const addImageField = () => {
+    setImages([...images, '']);
+  };
+
   const handleUpdateProduct = async (e) => {
     e.preventDefault();
 
-    // Check if all fields are filled
-    if (!sku || !title || !price || !imageUrl || !designer.username) {
+    if (!sku || !title || !price || images.some(image => !image) || !designer.username) {
       return Swal.fire({
         icon: 'error',
         title: 'Error!',
-        text: 'All fields are required.',
+        text: 'All fields are required, including all images.',
         showConfirmButton: true,
       });
     }
 
-    // Parse price to ensure it's a float with 2 decimal places
     const parsedPrice = parseFloat(parseFloat(price).toFixed(2));
 
     const updatedProduct = {
       sku,
       title,
       price: parsedPrice,
-      imageUrl,
+      images,
       username: designer.username,
     };
 
@@ -134,16 +144,26 @@ const EditProduct = ({ products, selectedProduct, setProducts, setIsEditing }) =
           required
           placeholder="0.00"
         />
-        <label htmlFor="imageUrl">Image URL</label>
-        <input
-          id="imageUrl"
-          type="text"
-          value={imageUrl}
-          onChange={(e) => setImageUrl(e.target.value)}
-          required
-        />
+        
+        {/* Multiple Image Fields */}
+        <label htmlFor="imageUrls">Images</label>
+        {images.map((image, index) => (
+          <div key={index}>
+            <input
+              type="text"
+              placeholder={`Image URL ${index + 1}`}
+              value={image}
+              onChange={(e) => handleImageChange(index, e)}
+              required
+            />
+          </div>
+        ))}
+        <button type="button" onClick={addImageField}>
+          Add Another Image
+        </button>
+
         <div>
-          <label>Username</label>
+          <label>Designer</label>
           <input
             type="text"
             value={designer.username}

@@ -41,7 +41,7 @@ export const Products = () => {
                 text: `Error loading products: ${error}`,
                 confirmButtonColor: '#159b8b',
                 cancelButtonColor: '#1d5f62',
-                footer: '<span style="color: #888;">Please try refreshing the page</span>'
+                footer: '<span style="color: #888;">Please login to see products</span>'
             });
         }
     }, [error]);
@@ -116,7 +116,7 @@ export const Products = () => {
                                 {product.ProdName}
                             </div>
                             <div className="product-price">
-                                Rs {product.ProdPrice.toLocaleString()}.00
+                                CAD$ {product.ProdPrice.toLocaleString()}.00
                             </div>
                             <button 
                                 className="addcart-btn"

@@ -5,6 +5,8 @@
     gap: 2rem;
     max-width: 1200px;
     margin: 0 auto;
+    height: 93vh; /* Full height of viewport */
+    margin-top: 7vh;
 }
 
 .product-card {

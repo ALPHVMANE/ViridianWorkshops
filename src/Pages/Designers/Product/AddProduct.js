@@ -198,7 +198,7 @@ const AddProduct = ({ setIsAdding }) => {
 
         {/* Designer (Readonly for designers) */}
         <div>
-          <label>Username</label>
+          <label>Designer</label>
           <input
             type="text"
             value={designer.username}

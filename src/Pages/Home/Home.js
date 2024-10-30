@@ -18,7 +18,7 @@ const Home = () => {
                 <div className="homepage-paragraph">
                     Discover endless possibilities with 3D printing. With the newest technology and an array of material, your imagination is your only limit. With precision and ease, you can create unique objects and designs suiting your tastes.
                 </div>
-                <Link to="/store" className="homepage-storebtn">~
+                <Link to="/explore" className="homepage-storebtn">~
                     Our Products
                     <img src={ra_icon} className="ra-icon" />
                 </Link>
