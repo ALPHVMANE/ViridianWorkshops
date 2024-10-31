@@ -12,7 +12,9 @@ import { Products } from './Pages/Explore/ProductDisplay'; // Import Products co
 import { ProductsListProvider } from './Pages/Explore/ProductList';
 import DynamicBg from './DynamicBg';
 import { CartContextProvider } from './Pages/Cart/CartContext';
-import { Cart } from './Pages/Cart/Cart';
+import  {Cart}  from './Pages/Cart/Cart';
+import Payment from './Pages/Payment/PaymentComponent';
+import PaySuccess from './Pages/Payment/PaymentSuccess';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
@@ -34,6 +36,8 @@ function App() {
             <Route path="/signup" element={<Signup />} />
             <Route path="/explore" element={<Products />} /> {/* Add Explore route */}
             <Route path="/cart-products" element={<Cart/>}></Route>
+            <Route path="/payment" element={<Payment />} />
+            <Route path="/pay-success" element={<PaySuccess />} />
             <Route 
               path="/admin/dashboard" 
               element={<Dashboard />}
