@@ -1,4 +1,5 @@
 //npm install cors express dotenv stripe
+//to run the server through terminal: node server.js
 
 const path = require('path');  // This needs to come first
 require('dotenv').config({ path: path.join(__dirname, '../.env') });
