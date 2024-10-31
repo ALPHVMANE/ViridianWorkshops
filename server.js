@@ -2,7 +2,7 @@
 //to run the server through terminal: node server.js
 
 const path = require('path');  // This needs to come first
-require('dotenv').config({ path: path.join(__dirname, '../.env') });
+require('dotenv').config({ path: path.join(__dirname, '.env') });
 
 console.log('🚀 Starting server...');
 console.log('📂 Current directory:', __dirname);
@@ -65,24 +65,26 @@ app.get("/config", (req, res) => {
   });
 });
 
-app.get("/create-payment-intent", async (req, res) => {
-  console.log('Cart Total Price:', req.body.totalPrice);
+// const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
+app.post("/create-payment-intent", async (req, res) => {
   try {
+    const { totalPrice, products } = req.body;
+    
+    // Create a PaymentIntent with the order amount and currency
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: 1000, // Replace with your actual amount calculation
-      currency: 'cad', // Matching your checkout currency
+      amount: Math.round(totalPrice * 100), // Stripe expects amount in cents
+      currency: "cad",
       automatic_payment_methods: {
         enabled: true,
       },
     });
-    res.send({ clientSecret: paymentIntent.client_secret });
-    // console.log('Created Payment Intent with amount:', amount);
-    // res.json({
-    //   clientSecret: paymentIntent.client_secret});
+
+    res.send({
+      clientSecret: paymentIntent.client_secret,
+    });
   } catch (error) {
-    console.error('Error creating payment intent:', error);
-    return res.status(400).json({ error: error.message });
+    res.status(500).send({ error: error.message });
   }
 });
 

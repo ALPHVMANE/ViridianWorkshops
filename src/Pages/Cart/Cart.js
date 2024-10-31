@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { CartContext } from './CartContext';
 import { useNavigate } from 'react-router-dom';
 import './styles/Cart.css';
@@ -6,6 +6,8 @@ import './styles/Cart.css';
 export const Cart = () => {
     const { shoppingCart, totalPrice, totalQty, dispatch } = useContext(CartContext);
     const navigate = useNavigate();
+    const [isProcessing, setIsProcessing] = useState(false);
+    const [checkoutError, setCheckoutError] = useState('');
 
     const handleRemoveItem = (productId) => {
         dispatch({
@@ -15,10 +17,8 @@ export const Cart = () => {
     };
 
     const handleUpdateQty = (productId, newQty, currentStock) => {
-        // Prevent negative quantities
         if (newQty < 1) return;
         
-        // Optional: Check against available stock
         if (currentStock && newQty > currentStock) {
             alert(`Sorry, only ${currentStock} items available in stock`);
             return;
@@ -32,40 +32,75 @@ export const Cart = () => {
     };
 
     const handleCheckout = async () => {
+        if (shoppingCart.length === 0) {
+            setCheckoutError('Your cart is empty');
+            return;
+        }
+
+        setIsProcessing(true);
+        setCheckoutError('');
+
         try {
+            // Create PaymentIntent
             const response = await fetch('http://localhost:5252/create-payment-intent', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
                     totalPrice: totalPrice,
-                    products: shoppingCart
+                    products: shoppingCart.map(item => ({
+                        id: item.ProdID,
+                        quantity: item.qty,
+                        price: item.ProdPrice,
+                        name: item.ProdName
+                    }))
                 })
             });
 
-            const data = await response.json();
-            
-            if (data.error) {
-                console.error('Payment Intent Error:', data.error);
-                return;
+            if (!response.ok) {
+                const errorData = await response.text();
+                throw new Error(errorData);
             }
 
-            console.log('Payment Intent Created:', data.clientSecret);
+            const { clientSecret } = await response.json();
+            
+            if (!clientSecret) {
+                throw new Error('Failed to get payment credentials');
+            }
+
+            // Navigate to payment page with the client secret
             navigate('/payment', { 
                 state: { 
-                    clientSecret: data.clientSecret,
-                    totalAmount: totalPrice 
-                }
+                    clientSecret,
+                    totalAmount: totalPrice,
+                    orderDetails: {
+                        items: shoppingCart,
+                        total: totalPrice
+                    }
+                },
+                replace: true
             });
+
         } catch (error) {
             console.error('Checkout Error:', error);
+            setCheckoutError(
+                error.message || 'Failed to process checkout. Please try again.'
+            );
+        } finally {
+            setIsProcessing(false);
         }
     };
 
     return (
         <div className="max-w-4xl mx-auto p-4">
             <h2 className="text-2xl font-bold mb-4">Shopping Cart ({totalQty} items)</h2>
+            
+            {checkoutError && (
+                <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                    {checkoutError}
+                </div>
+            )}
             
             {shoppingCart.length === 0 ? (
                 <div className="text-center py-8">
@@ -128,9 +163,9 @@ export const Cart = () => {
                         <button 
                             className="w-full mt-4 bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
                             onClick={handleCheckout}
-                            disabled={shoppingCart.length === 0}
+                            disabled={isProcessing || shoppingCart.length === 0}
                         >
-                            Proceed to Checkout
+                            {isProcessing ? 'Processing...' : 'Proceed to Checkout'}
                         </button>
                     </div>
                 </div>
