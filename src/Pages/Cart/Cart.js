@@ -58,6 +58,10 @@ export const Cart = () => {
                 })
             });
 
+            console.log("CLIENT SECRET:", {
+                hasClientSecret: !!clientSecret
+              });
+            
             if (!response.ok) {
                 const errorData = await response.text();
                 throw new Error(errorData);

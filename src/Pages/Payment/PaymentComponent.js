@@ -6,7 +6,7 @@ import './styles/payment.css';
 
 const Payment = ({ totalPrice }) => {
   const [stripePromise, setStripePromise] = useState(null);
-  const [clientSecret, setClientSecret] = useState("");
+  const { clientSecret, totalAmount, orderDetails } = state;
 
   // Debug log for environment variable
   console.log("Environment variable:", {
@@ -35,48 +35,15 @@ const Payment = ({ totalPrice }) => {
 
     getConfig();
   }, []);
-
-  useEffect(() => {
-    // Create payment intent
-    const getClientSecret = async () => {
-      try {
-        console.log("Creating payment intent...");
-        const response = await fetch("/create-payment-intent", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            amount: totalPrice
-          }),
-        });
-        
-        const data = await response.json();
-        console.log("Received client secret response:", {
-          success: !!data.clientSecret,
-          error: data.error
-        });
-        
-        setClientSecret(data.clientSecret);
-      } catch (err) {
-        console.error("Error creating payment intent:", err);
-      }
-    };
-
-    if (totalPrice > 0) {
-      getClientSecret();
-    }
-  }, [totalPrice]);
-
+    
   console.log("Render state:", {
     hasStripePromise: !!stripePromise,
-    hasClientSecret: !!clientSecret
   });
 
   return (
     <div className="payment-container">
       <h1>React Stripe and the Payment Element</h1>
-      <div>Total Amount: ${totalPrice}</div> 
+      <div>Total Amount: ${totalAmount}</div> 
       {clientSecret && stripePromise ? (
         <Elements stripe={stripePromise} options={{ clientSecret }}>
           <CheckoutForm />
