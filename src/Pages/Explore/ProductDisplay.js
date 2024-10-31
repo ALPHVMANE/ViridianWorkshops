@@ -30,7 +30,6 @@ const customSwal = Swal.mixin({
 });
 
 export const Products = () => {
-    console.log('🚀 Products component mounted');
     const { products, loading, error } = useContext(ProductList);
     const { dispatch } = useContext(CartContext);
 
@@ -66,7 +65,6 @@ export const Products = () => {
     };
 
     if (loading) {
-        console.log('⌛ Rendering loading state');
         return (
             <div className="loading-container">
                 <div>Loading products...</div>
@@ -104,7 +102,7 @@ export const Products = () => {
     
 
     const showNoProducts = () => {
-        console.log('📭 No products available');
+    
         customSwal.fire({
             icon: 'info',
             title: 'No Products Available',
@@ -115,7 +113,6 @@ export const Products = () => {
         });
     };
 
-    console.log('🎨 Rendering products list:', products.length);
     return (
         <div className="products-page">
             {products.length === 0 ? (
