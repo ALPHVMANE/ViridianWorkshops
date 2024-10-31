@@ -100,7 +100,7 @@ const SideMenu = ({ menuActive, toggleMenu }) => {
                                 <Link to="/admin/product-list" onClick={toggleMenu}>Product Designs</Link>
                             </li>
                             <li>
-                                <Link to="/admin/settings" onClick={toggleMenu}>Settings</Link>
+                                <Link to="http://localhost:5252/config" onClick={toggleMenu} target="_blank">Server</Link>
                             </li>
                             {/* <li>
                                 <Link to="/sales" onClick={toggleMenu}>Admin Sales</Link>

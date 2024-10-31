@@ -26,13 +26,6 @@ app.use(cors());
 // Serve static files
 app.use(express.static("public"));
 
-// Your routes...
-app.get("/config", (req, res) => {
-  res.send({
-    publishableKey: process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY,
-  });
-});
-
 app.post("/api/checkout", async (req, res) => {
   try {
     const { products } = req.body;
@@ -62,6 +55,34 @@ app.post("/api/checkout", async (req, res) => {
   } catch (error) {
     console.error('Stripe API Error:', error);
     res.status(500).json({ error: error.message });
+  }
+});
+
+// Your routes...
+app.get("/config", (req, res) => {
+  res.send({
+    publishableKey: process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY,
+  });
+});
+
+app.get("/create-payment-intent", async (req, res) => {
+  console.log('Cart Total Price:', req.body.totalPrice);
+
+  try {
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: 1000, // Replace with your actual amount calculation
+      currency: 'cad', // Matching your checkout currency
+      automatic_payment_methods: {
+        enabled: true,
+      },
+    });
+    res.send({ clientSecret: paymentIntent.client_secret });
+    // console.log('Created Payment Intent with amount:', amount);
+    // res.json({
+    //   clientSecret: paymentIntent.client_secret});
+  } catch (error) {
+    console.error('Error creating payment intent:', error);
+    return res.status(400).json({ error: error.message });
   }
 });
 

@@ -37,24 +37,21 @@ export const CartReducer = (state, action) => {
                 totalQty: totalQty - removedItem.qty
             };
 
-        case 'UPDATE_QTY':
-            const updatedCart = shoppingCart.map(item => 
-                item.ProdID === action.productId 
-                    ? { 
-                        ...item, 
-                        qty: action.newQty 
-                    }
-                    : item
-            );
-            
-            const newTotalPrice = updatedCart.reduce((sum, item) => sum + (item.ProdPrice * item.qty), 0);
-            const newTotalQty = updatedCart.reduce((sum, item) => sum + item.qty, 0);
-            
-            return {
-                shoppingCart,
-                totalPrice: newTotalPrice,
-                totalQty: newTotalQty
-            };
+            case 'UPDATE_QTY':
+                const updatedCart = shoppingCart.map(item =>
+                    item.ProdID === action.productId
+                        ? {
+                            ...item,
+                            qty: action.newQty
+                        }
+                        : item
+                );
+                
+                return {
+                    shoppingCart: updatedCart,  // You were returning the old shoppingCart
+                    totalPrice: updatedCart.reduce((sum, item) => sum + (item.ProdPrice * item.qty), 0),
+                    totalQty: updatedCart.reduce((sum, item) => sum + item.qty, 0)
+                };
 
         case 'CLEAR_CART':
             return {

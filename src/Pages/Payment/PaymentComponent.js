@@ -4,7 +4,7 @@ import { loadStripe } from "@stripe/stripe-js";
 import CheckoutForm from "./CheckoutForm";
 import './styles/payment.css';
 
-const Payment = () => {
+const Payment = ({ totalPrice }) => {
   const [stripePromise, setStripePromise] = useState(null);
   const [clientSecret, setClientSecret] = useState("");
 
@@ -18,13 +18,13 @@ const Payment = () => {
     const getConfig = async () => {
       try {
         console.log("Fetching config from server...");
-        const response = await fetch("/config");
+        const response = await fetch("http://localhost:5252/config");
         const { publishableKey } = await response.json();
         console.log("Received publishable key:", publishableKey);
         
         if (publishableKey) {
-          console.log("Initializing Stripe with key:", publishableKey);
           setStripePromise(loadStripe(publishableKey));
+          console.log("Initializing Stripe with key:", publishableKey);
         } else {
           console.error("No publishable key received from server");
         }
@@ -46,7 +46,9 @@ const Payment = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({}),
+          body: JSON.stringify({
+            amount: totalPrice
+          }),
         });
         
         const data = await response.json();
@@ -61,8 +63,10 @@ const Payment = () => {
       }
     };
 
-    getClientSecret();
-  }, []);
+    if (totalPrice > 0) {
+      getClientSecret();
+    }
+  }, [totalPrice]);
 
   console.log("Render state:", {
     hasStripePromise: !!stripePromise,
@@ -72,6 +76,7 @@ const Payment = () => {
   return (
     <div className="payment-container">
       <h1>React Stripe and the Payment Element</h1>
+      <div>Total Amount: ${totalPrice}</div> 
       {clientSecret && stripePromise ? (
         <Elements stripe={stripePromise} options={{ clientSecret }}>
           <CheckoutForm />

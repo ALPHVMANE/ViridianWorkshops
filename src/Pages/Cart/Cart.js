@@ -5,6 +5,7 @@ import './styles/Cart.css';
 
 export const Cart = () => {
     const { shoppingCart, totalPrice, totalQty, dispatch } = useContext(CartContext);
+    const navigate = useNavigate();
 
     const handleRemoveItem = (productId) => {
         dispatch({
@@ -13,8 +14,15 @@ export const Cart = () => {
         });
     };
 
-    const handleUpdateQty = (productId, newQty) => {
+    const handleUpdateQty = (productId, newQty, currentStock) => {
+        // Prevent negative quantities
         if (newQty < 1) return;
+        
+        // Optional: Check against available stock
+        if (currentStock && newQty > currentStock) {
+            alert(`Sorry, only ${currentStock} items available in stock`);
+            return;
+        }
         
         dispatch({
             type: 'UPDATE_QTY',
@@ -23,11 +31,36 @@ export const Cart = () => {
         });
     };
 
-    const navigate = useNavigate();
     const handleCheckout = async () => {
-        
-        console.log('Processing checkout for:', shoppingCart);
-        navigate('/payment');
+        try {
+            const response = await fetch('http://localhost:5252/create-payment-intent', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    totalPrice: totalPrice,
+                    products: shoppingCart
+                })
+            });
+
+            const data = await response.json();
+            
+            if (data.error) {
+                console.error('Payment Intent Error:', data.error);
+                return;
+            }
+
+            console.log('Payment Intent Created:', data.clientSecret);
+            navigate('/payment', { 
+                state: { 
+                    clientSecret: data.clientSecret,
+                    totalAmount: totalPrice 
+                }
+            });
+        } catch (error) {
+            console.error('Checkout Error:', error);
+        }
     };
 
     return (
@@ -54,22 +87,24 @@ export const Cart = () => {
                                     <h3 className="font-semibold">{item.ProdName}</h3>
                                     <p className="text-gray-600 text-sm">By {item.designer}</p>
                                     <p className="text-lg font-medium mt-1">
-                                        CAD ${item.ProdPrice.toLocaleString()}
+                                        CAD ${(item.ProdPrice * item.qty).toLocaleString()}
                                     </p>
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <button 
-                                        onClick={() => handleUpdateQty(item.ProdID, item.qty - 1)}
-                                        className="w-8 h-8 flex items-center justify-center border rounded hover:bg-gray-100"
+                                        onClick={() => handleUpdateQty(item.ProdID, item.qty - 1, item.stock)}
+                                        className="w-8 h-8 flex items-center justify-center border rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
                                         aria-label="Decrease quantity"
+                                        disabled={item.qty <= 1}
                                     >
                                         -
                                     </button>
                                     <span className="w-8 text-center">{item.qty}</span>
                                     <button 
-                                        onClick={() => handleUpdateQty(item.ProdID, item.qty + 1)}
-                                        className="w-8 h-8 flex items-center justify-center border rounded hover:bg-gray-100"
+                                        onClick={() => handleUpdateQty(item.ProdID, item.qty + 1, item.stock)}
+                                        className="w-8 h-8 flex items-center justify-center border rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
                                         aria-label="Increase quantity"
+                                        disabled={item.stock && item.qty >= item.stock}
                                     >
                                         +
                                     </button>
@@ -91,8 +126,9 @@ export const Cart = () => {
                             <span className="text-xl">CAD ${totalPrice.toLocaleString()}</span>
                         </div>
                         <button 
-                            className="w-full mt-4 bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700"
+                            className="w-full mt-4 bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
                             onClick={handleCheckout}
+                            disabled={shoppingCart.length === 0}
                         >
                             Proceed to Checkout
                         </button>
