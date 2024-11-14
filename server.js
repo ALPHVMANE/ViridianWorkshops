@@ -4,32 +4,30 @@
 const path = require('path');  // This needs to come first
 require('dotenv').config({ path: path.join(__dirname, '.env') });
 
-console.log('🚀 Starting server...');
 console.log('📂 Current directory:', __dirname);
 
-const express = require("express");
-const cors = require("cors");
+const express = require('express');
+const cors = require('cors');
+const stripe = require('stripe')(process.env.REACT_APP_STRIPE_SECRET_KEY);
 const app = express();
-
-// Log the environment variables (remove in production)
-console.log('====================================');
-console.log('Environment Check:');
-console.log('SECRET_STRIPE_KEY:', process.env.REACT_APP_STRIPE_SECRET_KEY ? '✅ Found' : '❌ Not Found');
-console.log('====================================');
-
-const stripe = require("stripe")(process.env.REACT_APP_STRIPE_SECRET_KEY);
 
 // Middleware
 app.use(express.json());
 app.use(cors());
+app.use(express.static('public'));
 
-// Serve static files
-app.use(express.static("public"));
+console.log('====================================');
+console.log('SECRET_STRIPE_KEY:', process.env.REACT_APP_STRIPE_SECRET_KEY ? '✅ Found' : '❌ Not Found');
+console.log('====================================');
 
-app.post("/api/checkout", async (req, res) => {
+
+app.post('/create-checkout-session', async (req, res) => {
   try {
     const { products } = req.body;
     
+    // Log the incoming cart data
+    console.log('Cart Data Received:', products);
+
     const lineItems = products.map(item => ({
       price_data: {
         currency: 'cad',
@@ -42,68 +40,21 @@ app.post("/api/checkout", async (req, res) => {
       },
       quantity: item.qty,
     }));
-    
+
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
       line_items: lineItems,
       mode: 'payment',
-      success_url: `${process.env.FRONTEND_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.FRONTEND_URL}/cart`,
+      success_url: `${process.env.FRONT_END}/success`,
+      cancel_url: `${process.env.FRONT_END}/cart`,
     });
-    
-    res.json({ id: session.id });
+
+    // Instead of redirecting, send the URL back to the client
+    res.json({ url: session.url });
   } catch (error) {
     console.error('Stripe API Error:', error);
     res.status(500).json({ error: error.message });
   }
 });
 
-// Your routes...
-app.get("/config", (req, res) => {
-  res.send({
-    publishableKey: process.env.REACT_APP_STRIPE_PUBLISHABLE_KEY,
-  });
-});
+app.listen(5252, () => console.log(`Running on port 5252 (ctrl + click): ${process.env.BACKEND_URL}`));
 
-// const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-
-app.post("/create-payment-intent", async (req, res) => {
-  try {
-    const { totalPrice, products } = req.body;
-    
-    // Create a PaymentIntent with the order amount and currency
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount: Math.round(totalPrice * 100), // Stripe expects amount in cents
-      currency: "cad",
-      automatic_payment_methods: {
-        enabled: true,
-      },
-    });
-
-    res.send({
-      clientSecret: paymentIntent.client_secret,
-    });
-  } catch (error) {
-    res.status(500).send({ error: error.message });
-  }
-});
-
-// Start server
-const PORT = process.env.PORT || 5252;
-const server = app.listen(PORT, () => {
-  console.log('====================================');
-  console.log(`✨ Server is running!`);
-  console.log(`🌐 http://localhost:${PORT}`);
-  console.log('====================================');
-}).on('error', (error) => {
-  console.error('❌ Failed to start server:', error);
-});
-
-// Error handling
-process.on('uncaughtException', (error) => {
-  console.error('💥 Uncaught Exception:', error);
-});
-
-process.on('unhandledRejection', (error) => {
-  console.error('💥 Unhandled Rejection:', error);
-});

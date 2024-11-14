@@ -37,7 +37,7 @@ function App() {
             <Route path="/explore" element={<Products />} /> {/* Add Explore route */}
             <Route path="/cart-products" element={<Cart/>}></Route>
             <Route path="/payment" element={<Payment />} />
-            <Route path="/pay-success" element={<PaySuccess />} />
+            <Route path="/checkout" element={<PaySuccess />} />
             <Route 
               path="/admin/dashboard" 
               element={<Dashboard />}

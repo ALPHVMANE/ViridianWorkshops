@@ -36,6 +36,12 @@ export const Cart = () => {
             setCheckoutError('Your cart is empty');
             return;
         }
+        navigate('/checkout', { 
+            state: { 
+                cartItems: shoppingCart,
+                totalPrice: totalPrice 
+            }
+        });
 
         setIsProcessing(true);
         setCheckoutError('');
