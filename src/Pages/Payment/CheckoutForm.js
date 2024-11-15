@@ -1,9 +1,28 @@
-import React, { useState, useEffect } from "react";
+import React, { useContext, useState } from "react";
+import { CartContext } from '../Cart/CartContext';
+import { useLocation } from 'react-router-dom';
+import './CheckoutForm.css'
 
-const ProductDisplay = ({ cartItems }) => {
+const CheckForm = () => {
+  const { shoppingCart, totalPrice } = useContext(CartContext);
+  const location = useLocation();
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [checkoutError, setCheckoutError] = useState('');
+
+  const cartItems = location.state?.cartItems || shoppingCart;
+  const cartTotal = location.state?.totalPrice || totalPrice;
+
   const handleCheckout = async (event) => {
     event.preventDefault();
     
+    if (cartItems.length === 0) {
+      setCheckoutError('Your cart is empty');
+      return;
+    }
+
+    setIsProcessing(true);
+    setCheckoutError('');
+
     try {
       const response = await fetch('http://localhost:5252/create-checkout-session', {
         method: 'POST',
@@ -11,85 +30,94 @@ const ProductDisplay = ({ cartItems }) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ 
-          products: cartItems || [{
-            ProdName: "Stubborn Attachments",
-            designer: "Default Designer",
-            ProdPrice: 20.00,
-            ProdImg: "https://i.imgur.com/EHyR2nP.png",
-            qty: 1
-          }]
+          products: cartItems
         })
       });
 
+      if (!response.ok) {
+        const errorData = await response.text();
+        throw new Error(errorData);
+      }
+
       const { url } = await response.json();
       
-      // Redirect to Stripe Checkout
       window.location.href = url;
+
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Checkout Error:', error);
+      setCheckoutError(
+        error.message || 'Failed to process checkout. Please try again.'
+      );
+    } finally {
+      setIsProcessing(false);
     }
   };
 
   return (
-    <section>
-      <div className="product">
-        <img
-          src="https://i.imgur.com/EHyR2nP.png"
-          alt="The cover of Stubborn Attachments"
-        />
-        <div className="description">
-          <h3>Stubborn Attachments</h3>
-          <h5>$20.00</h5>
-        </div>
+    <div className="checkform-container">
+      <div className="checkform-section">
+        <h2 className="checkform-heading">Checkout Summary</h2>
+        
+        {checkoutError && (
+          <div className="checkform-text error">
+            {checkoutError}
+          </div>
+        )}
+        
+        {cartItems.length === 0 ? (
+          <div className="checkform-text">
+            <p>Your cart is empty</p>
+          </div>
+        ) : (
+          <>
+            <div className="checkform-products">
+              {cartItems.map(item => (
+                <div key={item.ProdID} className="checkform-product">
+                  <img 
+                    src={item.ProdImg || '/api/placeholder/80/80'} 
+                    alt={item.ProdName}
+                    className="checkform-image"
+                  />
+                  <div className="checkform-description">
+                    <h3 className="checkform-heading">{item.ProdName}</h3>
+                    <p className="checkform-text">By {item.designer}</p>
+                    <h5 className="checkform-subheading">
+                      CAD ${(item.ProdPrice * item.qty).toLocaleString()}
+                    </h5>
+                    <p className="checkform-text">Quantity: {item.qty}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="checkout-summary">
+              <div className="checkout-total">
+                <span className="checkform-heading">Total:</span>
+                <span className="checkform-heading">
+                  CAD ${cartTotal.toLocaleString()}
+                </span>
+              </div>
+              <form onSubmit={handleCheckout}>
+                <button 
+                  type="submit"
+                  className="checkform-button"
+                  disabled={isProcessing || cartItems.length === 0}
+                >
+                  {isProcessing ? 'Processing...' : 'Proceed to Checkout'}
+                </button>
+              </form>
+            </div>
+          </>
+        )}
       </div>
-      <form onSubmit={handleCheckout}>
-        <button type="submit">
-          Checkout
-        </button>
-      </form>
-    </section>
+    </div>
   );
 };
 
-const Message = ({ message }) => (
-  <section>
-    <p>{message}</p>
+export const Message = ({ message }) => (
+  <section className="checkform-section">
+    <p className="checkform-text">{message}</p>
   </section>
 );
 
-export default function App() {
-  const [message, setMessage] = useState("");
-  const [cartItems, setCartItems] = useState(null);
-
-  useEffect(() => {
-    // Check to see if this is a redirect back from Checkout
-    const query = new URLSearchParams(window.location.search);
-
-    if (query.get("success")) {
-      setMessage("Order placed! You will receive an email confirmation.");
-    }
-
-    if (query.get("canceled")) {
-      setMessage(
-        "Order canceled -- continue to shop around and checkout when you're ready."
-      );
-    }
-
-    // Load cart items from your storage (localStorage, Redux, etc.)
-    // This is just an example - replace with your actual cart data source
-    const loadCartItems = () => {
-      const savedCart = localStorage.getItem('cart');
-      if (savedCart) {
-        setCartItems(JSON.parse(savedCart));
-      }
-    };
-
-    loadCartItems();
-  }, []);
-
-  return message ? (
-    <Message message={message} />
-  ) : (
-    <ProductDisplay cartItems={cartItems} />
-  );
-}
+export { CheckForm };

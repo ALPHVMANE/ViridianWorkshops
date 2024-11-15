@@ -13,12 +13,14 @@ import { ProductsListProvider } from './Pages/Explore/ProductList';
 import DynamicBg from './DynamicBg';
 import { CartContextProvider } from './Pages/Cart/CartContext';
 import  {Cart}  from './Pages/Cart/Cart';
-import Payment from './Pages/Payment/PaymentComponent';
-import PaySuccess from './Pages/Payment/PaymentSuccess';
+import {CheckForm } from './Pages/Payment/CheckoutForm';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
   const location = useLocation();
+
+
+  
 
   useEffect(() => {
     setIsAuthenticated(JSON.parse(localStorage.getItem('is_authenticated')));
@@ -35,9 +37,9 @@ function App() {
             <Route path="/login" element={<LoginForm />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/explore" element={<Products />} /> {/* Add Explore route */}
-            <Route path="/cart-products" element={<Cart/>}></Route>
-            <Route path="/payment" element={<Payment />} />
-            <Route path="/checkout" element={<PaySuccess />} />
+            <Route path="/cart-products" element={<Cart/>} />
+            <Route path="/checkout" element={<CheckForm />} />
+            {/* <Route path="/success" element={<Success />} /> */}
             <Route 
               path="/admin/dashboard" 
               element={<Dashboard />}

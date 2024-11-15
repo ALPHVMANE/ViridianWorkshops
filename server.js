@@ -23,7 +23,7 @@ console.log('====================================');
 
 app.post('/create-checkout-session', async (req, res) => {
   try {
-    const { products } = req.body;
+    const { totalPrice, products } = req.body;
     
     // Log the incoming cart data
     console.log('Cart Data Received:', products);
@@ -44,8 +44,8 @@ app.post('/create-checkout-session', async (req, res) => {
     const session = await stripe.checkout.sessions.create({
       line_items: lineItems,
       mode: 'payment',
-      success_url: `${process.env.FRONT_END}/success`,
-      cancel_url: `${process.env.FRONT_END}/cart`,
+      success_url: `${process.env.FRONTEND_URL}/success`,
+      cancel_url: `${process.env.FRONTEND_URL}/cart-products`,
     });
 
     // Instead of redirecting, send the URL back to the client

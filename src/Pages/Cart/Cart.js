@@ -6,7 +6,6 @@ import './styles/Cart.css';
 export const Cart = () => {
     const { shoppingCart, totalPrice, totalQty, dispatch } = useContext(CartContext);
     const navigate = useNavigate();
-    const [isProcessing, setIsProcessing] = useState(false);
     const [checkoutError, setCheckoutError] = useState('');
 
     const handleRemoveItem = (productId) => {
@@ -31,75 +30,23 @@ export const Cart = () => {
         });
     };
 
-    const handleCheckout = async () => {
+    const handleCheckout = () => {
         if (shoppingCart.length === 0) {
             setCheckoutError('Your cart is empty');
             return;
         }
+
+        // Navigate directly to checkout with cart information
         navigate('/checkout', { 
             state: { 
                 cartItems: shoppingCart,
-                totalPrice: totalPrice 
+                totalPrice: totalPrice,
+                orderDetails: {
+                    items: shoppingCart,
+                    total: totalPrice
+                }
             }
         });
-
-        setIsProcessing(true);
-        setCheckoutError('');
-
-        try {
-            // Create PaymentIntent
-            const response = await fetch('http://localhost:5252/create-payment-intent', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    totalPrice: totalPrice,
-                    products: shoppingCart.map(item => ({
-                        id: item.ProdID,
-                        quantity: item.qty,
-                        price: item.ProdPrice,
-                        name: item.ProdName
-                    }))
-                })
-            });
-
-            console.log("CLIENT SECRET:", {
-                hasClientSecret: !!clientSecret
-              });
-            
-            if (!response.ok) {
-                const errorData = await response.text();
-                throw new Error(errorData);
-            }
-
-            const { clientSecret } = await response.json();
-            
-            if (!clientSecret) {
-                throw new Error('Failed to get payment credentials');
-            }
-
-            // Navigate to payment page with the client secret
-            navigate('/payment', { 
-                state: { 
-                    clientSecret,
-                    totalAmount: totalPrice,
-                    orderDetails: {
-                        items: shoppingCart,
-                        total: totalPrice
-                    }
-                },
-                replace: true
-            });
-
-        } catch (error) {
-            console.error('Checkout Error:', error);
-            setCheckoutError(
-                error.message || 'Failed to process checkout. Please try again.'
-            );
-        } finally {
-            setIsProcessing(false);
-        }
     };
 
     return (
@@ -173,9 +120,9 @@ export const Cart = () => {
                         <button 
                             className="w-full mt-4 bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
                             onClick={handleCheckout}
-                            disabled={isProcessing || shoppingCart.length === 0}
+                            disabled={shoppingCart.length === 0}
                         >
-                            {isProcessing ? 'Processing...' : 'Proceed to Checkout'}
+                            Proceed to Checkout
                         </button>
                     </div>
                 </div>
@@ -183,3 +130,5 @@ export const Cart = () => {
         </div>
     );
 };
+
+export default Cart;
