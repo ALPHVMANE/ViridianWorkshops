@@ -14,6 +14,7 @@ import DynamicBg from './DynamicBg';
 import { CartContextProvider } from './Pages/Cart/CartContext';
 import  {Cart}  from './Pages/Cart/Cart';
 import {CheckForm } from './Pages/Payment/CheckoutForm';
+import Success from './Pages/Payment/Success';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
@@ -39,7 +40,7 @@ function App() {
             <Route path="/explore" element={<Products />} /> {/* Add Explore route */}
             <Route path="/cart-products" element={<Cart/>} />
             <Route path="/checkout" element={<CheckForm />} />
-            {/* <Route path="/success" element={<Success />} /> */}
+            <Route path="/success" element={<Success />} />
             <Route 
               path="/admin/dashboard" 
               element={<Dashboard />}

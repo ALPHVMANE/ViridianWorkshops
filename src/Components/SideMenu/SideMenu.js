@@ -100,7 +100,7 @@ const SideMenu = ({ menuActive, toggleMenu }) => {
                                 <Link to="/admin/product-list" onClick={toggleMenu}>Product Designs</Link>
                             </li>
                             <li>
-                                <Link to="http://localhost:5252/config" onClick={toggleMenu} target="_blank">Server</Link>
+                                <Link to="/admin/order-list" onClick={toggleMenu} target="_blank">Customer Orders</Link>
                             </li>
                             {/* <li>
                                 <Link to="/sales" onClick={toggleMenu}>Admin Sales</Link>
@@ -109,7 +109,7 @@ const SideMenu = ({ menuActive, toggleMenu }) => {
                     ) : userData?.role === 'user' ? (
                         <>
                             <li>
-                                <Link to="/account" onClick={toggleMenu}>Account</Link>
+                                 <Link to="/user/order-list" onClick={toggleMenu} target="_blank">My Orders</Link>
                             </li>
                             <li>
                                 <Link to="/settings" onClick={toggleMenu}>User Settings</Link>
