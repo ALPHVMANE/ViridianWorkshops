@@ -44,17 +44,48 @@ app.post('/create-checkout-session', async (req, res) => {
     const session = await stripe.checkout.sessions.create({
       line_items: lineItems,
       mode: 'payment',
-      success_url: `${process.env.FRONTEND_URL}/success`,
+      success_url: `${process.env.FRONTEND_URL}/success?session_id={CHECKOUT_SESSION_ID}`, // Add session_id
       cancel_url: `${process.env.FRONTEND_URL}/cart-products`,
     });
 
-    // Instead of redirecting, send the URL back to the client
     res.json({ url: session.url });
   } catch (error) {
     console.error('Stripe API Error:', error);
     res.status(500).json({ error: error.message });
   }
 });
+
+app.get('/checkout-session/:sessionId', async (req, res) => {
+  try {
+    const { sessionId } = req.params;
+    const session = await stripe.checkout.sessions.retrieve(sessionId, {
+      expand: ['line_items', 'payment_intent']
+    });
+    res.json(session);
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('/checkout-session/recent', async (req, res) => {
+  try {
+    // Get sessions from the last 7 days
+    const sevenDaysAgo = Math.floor(Date.now() / 1000) - (7 * 24 * 60 * 60);
+    
+    const sessions = await stripe.checkout.sessions.list({
+      created: { gte: sevenDaysAgo },
+      limit: 100, // Adjust this limit if you expect more transactions
+      expand: ['line_items']
+    });
+
+    res.json(sessions.data);
+  } catch (error) {
+    console.error('Error fetching recent sessions:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 
 app.listen(5252, () => console.log(`Running on port 5252 (ctrl + click): ${process.env.BACKEND_URL}`));
 
