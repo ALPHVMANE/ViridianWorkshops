@@ -1,121 +1,170 @@
-import { useEffect, useContext } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { ref, push, serverTimestamp } from 'firebase/db';
-import { db } from '../../../Config/Firebase';
-import { CartContext } from '../Cart/CartContext';
-import { AuthContext } from '../Auth/AuthContext';
+import React, { useState, useEffect } from 'react';
+import Swal from 'sweetalert2';
+import { ref, onValue, update, get } from 'firebase/database';
+import { db, auth } from '../../../Config/Firebase';
 
-const Order = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const { cart, totalAmount } = useContext(CartContext);
-  const { currentUser } = useContext(AuthContext);
-
-  const getStripeSessionDetails = async (sessionId) => {
-    try {
-      const response = await fetch(`/checkout-session/${sessionId}`);
-      const sessionDetails = await response.json();
-      return sessionDetails;
-    } catch (error) {
-      console.error('Error fetching session details:', error);
-      throw error;
+// Admin role check function
+const checkAdminRole = async (userId) => {
+  try {
+    const userRef = ref(db, `users/${userId}`);
+    const snapshot = await get(userRef);
+    if (snapshot.exists()) {
+      const userData = snapshot.val();
+      return userData.role === 'admin';
     }
-  };
-
-  const createOrder = async () => {
-    try {
-      // Get session ID from URL
-      const urlParams = new URLSearchParams(window.location.search);
-      const sessionId = urlParams.get('session_id');
-
-      if (!sessionId) {
-        throw new Error('No session ID found');
-      }
-
-      // Fetch session details from Stripe
-      const sessionDetails = await getStripeSessionDetails(sessionId);
-
-      // Reference to the orders node in the db
-      const ordersRef = ref(db, 'orders');
-
-      // Generate unique order ID
-      const orderNumber = Math.floor(Math.random() * 1000000).toString().padStart(6, '0');
-
-      // Create order object with Stripe session details
-      const orderData = {
-        orderId: orderNumber,
-        userId: currentUser.uid,
-        userEmail: currentUser.email,
-        orderDate: serverTimestamp(),
-        products: sessionDetails.line_items.data.map(item => ({
-          productId: item.price.product,
-          name: item.description,
-          quantity: item.quantity,
-          price: item.price.unit_amount / 100, // Convert from cents to dollars
-          subtotal: (item.price.unit_amount * item.quantity) / 100
-        })),
-        payment: {
-          sessionId: sessionId,
-          paymentIntentId: sessionDetails.payment_intent,
-          status: sessionDetails.payment_status,
-          amount: sessionDetails.amount_total / 100, // Convert from cents to dollars
-          currency: sessionDetails.currency,
-          created: new Date(sessionDetails.created * 1000).toISOString()
-        },
-        orderStatus: 'processing',
-        totalAmount: sessionDetails.amount_total / 100,
-        metadata: {
-          createdAt: serverTimestamp(),
-          updatedAt: serverTimestamp(),
-          platform: 'web',
-          userAgent: navigator.userAgent
-        }
-      };
-
-      // Push the order to Firebase
-      await push(ordersRef, orderData);
-
-      // Mark the session as processed
-      await fetch('/mark-session-processed', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ sessionId }),
-      });
-
-      // Store order number in localStorage for reference
-      localStorage.setItem('lastOrderNumber', orderNumber);
-
-      // Navigate to success page with order details
-      navigate('/success', { 
-        state: { 
-          orderNumber,
-          totalAmount: orderData.totalAmount,
-          email: currentUser.email 
-        }
-      });
-
-    } catch (error) {
-      console.error('Error creating order:', error);
-      navigate('/error', {
-        state: { 
-          message: 'There was an error processing your order. Please contact support.' 
-        }
-      });
-    }
-  };
-
-  useEffect(() => {
-    if (!currentUser) {
-      navigate('/login');
-      return;
-    }
-
-    createOrder();
-  }, []);
-
-  return null;
+    return false;
+  } catch (error) {
+    console.error('Error checking admin role:', error);
+    return false;
+  }
 };
 
-export default Order;
+const OrdersDashboard = () => {
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
+  
+  useEffect(() => {
+    const checkAdmin = async () => {
+      if (auth.currentUser) {
+        const adminStatus = await checkAdminRole(auth.currentUser.uid);
+        setIsAdmin();
+      }
+    };
+    checkAdmin();
+  }, [auth.currentUser]);
+
+  useEffect(() => {
+    if (!isAdmin) return;
+
+    const ordersRef = ref(db, 'orders');
+    const unsubscribe = onValue(ordersRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        const ordersArray = Object.entries(data).map(([key, value]) => ({
+          id: key,
+          ...value,
+        }));
+        setOrders(ordersArray);
+      }
+      setLoading(false);
+    });
+
+    return () => {
+      unsubscribe();
+      setOrders([]);
+    };
+  }, [isAdmin]);
+
+  const handleRefund = async (order) => {
+    try {
+      if (!isAdmin) {
+        throw new Error('Unauthorized: Admin privileges required');
+      }
+
+      const result = await Swal.fire({
+        title: 'Confirm Refund',
+        text: `Are you sure you want to refund order ${order.orderId}?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, refund it!',
+        cancelButtonText: 'Cancel'
+      });
+
+      if (result.isConfirmed) {
+        const response = await fetch(`/refund-payment`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            sessionId: order.payment.sessionId
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error('Refund failed');
+        }
+
+        // Update order status in Firebase
+        const orderRef = ref(db, `orders/${order.id}`);
+        await update(orderRef, {
+          'payment.status': 'refunded',
+          'orderStatus': 'refunded',
+          'metadata.refundedAt': new Date().toISOString(),
+          'metadata.refundedBy': auth.currentUser.uid
+        });
+
+        Swal.fire('Refunded!', 'The order has been refunded.', 'success');
+      }
+    } catch (error) {
+      console.error('Refund error:', error);
+      Swal.fire('Error!', error.message, 'error');
+    }
+  };
+
+  if (!isAdmin) {
+    return <div>Unauthorized: Admin access required</div>;
+  }
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  return (
+    <div className="dashboard-container">
+      <div className="dashboard-wrapper">
+        <header>
+          <h1 className="UsrMngSoftHeader">
+            <span className="blue">Orders</span>
+            <span className="yellow"> Management</span>
+          </h1>
+        </header>
+        
+        <table className="UsrMngTable">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Order ID</th>
+              <th>Customer</th>
+              <th>Amount</th>
+              <th>Status</th>
+              <th>Date</th>
+              <th>Items</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {orders.map((order, index) => (
+              <tr key={order.id}>
+                <td>{index + 1}</td>
+                <td>{order.orderId}</td>
+                <td>{order.userEmail || 'N/A'}</td>
+                <td>${order.totalAmount.toFixed(2)}</td>
+                <td>{order.payment.status}</td>
+                <td>{new Date(order.orderDate).toLocaleDateString()}</td>
+                <td>
+                  {order.products.map(product => (
+                    `${product.name} (${product.quantity})`
+                  )).join(', ')}
+                </td>
+                <td>
+                  {order.payment.status === 'paid' && (
+                    <button 
+                      onClick={() => handleRefund(order)}
+                      className="button muted-button"
+                    >
+                      Refund
+                    </button>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+};
+
+export default OrdersDashboard;

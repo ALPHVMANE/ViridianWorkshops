@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom'; // Import useNavigate for redirect after logout
-import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth'; // Import signOut
-import { getDatabase, ref, get } from 'firebase/database';
+import { onAuthStateChanged, signOut } from 'firebase/auth'; // Import signOut
+import {auth, db} from '../../Config/Firebase';
+import { ref, get } from 'firebase/database';
 import './SideMenu.css';
 
 const SideMenu = ({ menuActive, toggleMenu }) => {
@@ -12,13 +13,12 @@ const SideMenu = ({ menuActive, toggleMenu }) => {
     const navigate = useNavigate(); // Use navigate to redirect after logout
 
     useEffect(() => {
-        const auth = getAuth();
+
         
         // Real-time authentication state listener
         const unsubscribe = onAuthStateChanged(auth, (user) => {
             if (user) {
                 setCurrentUser(user);
-                const db = getDatabase();
                 const userRef = ref(db, `users/${user.uid}`);
                 get(userRef).then((snapshot) => {
                     if (snapshot.exists()) {
@@ -47,7 +47,6 @@ const SideMenu = ({ menuActive, toggleMenu }) => {
 
     // Handle the logout action
     const handleLogout = () => {
-        const auth = getAuth();
         signOut(auth).then(() => {
             // Sign-out successful, redirect to login
             navigate('/login');

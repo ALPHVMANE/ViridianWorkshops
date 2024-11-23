@@ -118,7 +118,7 @@ export const Products = () => {
                             <div className="product-name">
                                 {product.ProdName}
                             </div>
-                            <div className="designer-name">
+                            <div className="product-designer">
                                 By {product.designer}
                             </div>
                             <div className="product-price">

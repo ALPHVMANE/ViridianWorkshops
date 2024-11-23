@@ -42,6 +42,13 @@
     color: #333;
 }
 
+.product-designer {
+    padding: 1rem;
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: #333;
+}
+
 .product-price {
     padding: 0 1rem;
     font-size: 1.2rem;

@@ -1,23 +1,29 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './NavBar.css';
 import vm_logo from '../img/logo.png';
 import SideMenu from '../SideMenu/SideMenu'; // Import the side menu
 import { ReactComponent as CartIcon } from '../svg/cart_icon.svg';
 
+
 const NavBar = () => {
     const [menuActive, setMenuActive] = useState(false);
+    const navigate = useNavigate();
     
     const toggleMenu = () => {
         setMenuActive(!menuActive);
         document.body.classList.toggle('opened', !menuActive);
     };
 
+    const handleNavigate = () => {
+        navigate('/');
+    };
+
     return (
         <div>
             <nav className="NavBar">
                 <div className="navbar-container">
-                    <div className="leftside">
+                    <div className="leftside" onClick={handleNavigate}>
                         <img className="logo-nav" src={vm_logo} width="40px" alt="Viridian Workshops Logo" />
                         <h1 className="company-name">
                             Viridian <br /> Workshops
