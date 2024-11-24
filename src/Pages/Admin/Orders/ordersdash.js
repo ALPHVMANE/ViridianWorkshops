@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Swal from 'sweetalert2';
 
-const OrdersDashboard = ({ setIsAuthenticated }) => {
+const ODash = ({ setIsAuthenticated }) => {
     const [orders, setOrders] = useState([]);
     const [selectedOrder, setSelectedOrder] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
@@ -104,4 +104,4 @@ const OrdersDashboard = ({ setIsAuthenticated }) => {
     );
   };
 
-export default OrdersDashboard;
+export default ODash;

@@ -15,6 +15,7 @@ import { CartContextProvider } from './Pages/Cart/CartContext';
 import  {Cart}  from './Pages/Cart/Cart';
 import {CheckForm } from './Pages/Payment/CheckoutForm';
 import Success from './Pages/Payment/Success';
+// import OrdersDashboard from './Pages/Admin/Orders/OrdersFetch'
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
@@ -49,6 +50,10 @@ function App() {
               path="/admin/product-list" 
               element={<ProductListAdmin />}
             />
+            {/* <Route 
+              path="/admin/order-list" 
+              element={<OrdersDashboard />}
+            /> */}
             <Route 
               path="/designer/product-list" 
               element={<ProductDashboard />}
