@@ -33,6 +33,11 @@ const DynamicBg = ({ children }) => {
         document.body.style.backgroundSize = 'cover'; // Ensure the image covers the body
         document.body.style.backgroundPosition = 'center';
         break;
+        case '/admin/order-list':
+        document.body.style.backgroundImage = `url(${AdminBg})`;
+        document.body.style.backgroundSize = 'cover'; // Ensure the image covers the body
+        document.body.style.backgroundPosition = 'center';
+        break;
         case '/signup':
         document.body.style.backgroundImage = `url(${AbstractBg})`;
         document.body.style.backgroundSize = 'cover'; // Ensure the image covers the body

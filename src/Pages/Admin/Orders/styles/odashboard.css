@@ -1,0 +1,227 @@
+.orderdashboard-container{
+  font-family: 'Poppins', sans-serif; 
+  display: flex;
+  justify-content: center; 
+  align-items: flex-start;
+  height: 93vh;
+  width: 100vw;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale; 
+  margin-top: 7vh;
+  overflow: auto;
+}
+
+.orderdashboard-wrapper {
+  width: 90vw;
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+  justify-content: center; 
+  align-items: center;
+  border-radius: 8px;
+  background: transparent;
+    backdrop-filter: blur(50px);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin: 8vh 0;
+}
+
+/* Header Styles */
+.orderdashboard-wrapper header {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.UsrMngTable{
+  width: 90vw;
+}
+.UsrMngSoftHeader {
+  font-size: 36px;
+  color: #9dacaa;
+}
+
+.UsrCreateBtn {
+  padding: 10px 15px;
+  background-color: #19837a ;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+
+.blue { color: #233b49; }
+.yellow { color: #159b8b; }
+
+.orderdashboard-wrapper th {
+  font-weight: bold;
+  font-size: 1em;
+  text-align: center;
+  color: #159b8b;
+}
+
+.orderdashboard-wrapper td {
+  font-weight: normal;
+  font-size: 14px;
+  text-align: center;
+  -webkit-box-shadow: 0 2px 2px -2px #0E1119;
+	   -moz-box-shadow: 0 2px 2px -2px #0E1119;
+	        box-shadow: 0 2px 2px -2px #0E1119;
+  color:   #9dacaa;        
+  
+  word-wrap: break-word;
+  word-break: break-all; /* This forces text to break if it's too long */
+  overflow: hidden; /* Prevent content from overflowing */
+  text-overflow: ellipsis; /* Adds '...' for truncated content */
+  white-space: normal; /* Allow text to wrap onto multiple lines */
+}
+
+.orderdashboard-wrapper td, .orderdashboard-wrapper th {
+  padding-bottom: 2px;
+  padding-top: 2px;
+    /*
+  padding-left:2%;   */
+}
+
+/* Background-color of the odd rows */
+.orderdashboard-wrapper tr:nth-child(odd) {
+  background-color: #323C50;
+}
+
+/* Background-color of the even rows */
+.orderdashboard-wrapper tr:nth-child(even) {
+  background-color: #2C3446;
+}
+
+.orderdashboard-wrapper th {
+  background-color: #1F2739;
+}
+
+.orderdashboard-wrapper td:first-child { }
+
+.orderdashboard-wrapper tr:hover {
+  background-color: #464A52;
+  -webkit-box-shadow: 0 6px 6px -6px #0E1119;
+    -moz-box-shadow: 0 6px 6px -6px #0E1119;
+        box-shadow: 0 6px 6px -6px #0E1119;
+}
+
+.refund-button {
+  background-color: #d32f2f !important;
+  color: white;
+  transition: background-color 0.3s;
+}
+
+.refund-button:hover {
+  background-color: #b71c1c !important;
+}
+
+/* Style for disabled buttons */
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Loading indicator styles */
+.loading-spinner {
+  border: 3px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 3px solid #19837a;
+  width: 24px;
+  height: 24px;
+  animation: spin 1s linear infinite;
+  margin: 0 auto;
+}
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  color: #159b8b;
+}
+
+.loading-spinner {
+  border: 4px solid rgba(21, 155, 139, 0.1);
+  border-left-color: #159b8b;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 15px;
+}
+
+.error-message {
+  color: #F44336;
+  text-align: center;
+  padding: 20px;
+  background: #2C3446;
+  border-radius: 4px;
+  margin: 20px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/*TABLE CSS*/
+.expand-button {
+  background: none;
+  border: none;
+  color: #159b8b;
+  cursor: pointer;
+  font-size: 1.2em;
+  padding: 0 5px;
+}
+
+.expanded-row {
+  background-color: #2C3446 !important;
+}
+
+.order-details {
+  padding: 15px;
+  margin: 10px;
+  border-radius: 4px;
+  background-color: #323C50;
+}
+
+.order-details .section {
+  margin-bottom: 15px;
+}
+
+.order-details h4 {
+  color: #159b8b;
+  margin-bottom: 10px;
+}
+
+.products-table {
+  width: 100%;
+  margin-top: 10px;
+  border-collapse: collapse;
+}
+
+.products-table th,
+.products-table td {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid #464A52;
+}
+
+.products-table th {
+  color: #9dacaa;
+  font-weight: bold;
+}
+
+.order-details p {
+  margin: 5px 0;
+  color: #9dacaa;
+}

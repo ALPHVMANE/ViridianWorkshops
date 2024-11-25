@@ -1,4 +1,5 @@
-
+import React, { useState, useEffect } from 'react';
+import Swal from 'sweetalert2';
 const OrderEdit = ({ selectedOrder, setIsEditing }) => {
     const [status, setStatus] = useState(selectedOrder.status);
     const [isProcessing, setIsProcessing] = useState(false);
@@ -88,11 +89,6 @@ const OrderEdit = ({ selectedOrder, setIsEditing }) => {
             <div className="detail-group">
               <label>Order ID</label>
               <div>{selectedOrder.orderId}</div>
-            </div>
-  
-            <div className="detail-group">
-              <label>Customer Name</label>
-              <div>{selectedOrder.paymentDetails?.customerName || 'N/A'}</div>
             </div>
   
             <div className="detail-group">

@@ -1,6 +1,6 @@
 // src/utils/AdminTransactions.js
 import { ref, get, push, serverTimestamp } from 'firebase/database';
-import { db } from '../Config/Firebase';
+import { db } from '../../../Config/Firebase';
 
 const generateOrphanedOrderId = async () => {
   try {
@@ -44,7 +44,7 @@ const checkAdminRole = async (userId) => {
   }
 };
 
-export const checkOrphanedTransactions = async (currentUser) => {
+export const CheckOrphanedTransactions = async (currentUser) => {
   try {
     // Verify admin privileges by checking database
     const isAdmin = await checkAdminRole(currentUser.uid);
@@ -159,5 +159,4 @@ const createOrphanedOrder = async (session, adminUserId) => {
     throw error;
   }
 };
-
-export default checkOrphanedTransactions;
+export default CheckOrphanedTransactions;

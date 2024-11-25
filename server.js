@@ -15,6 +15,21 @@ console.log('====================================');
 console.log('SECRET_STRIPE_KEY:', process.env.REACT_APP_STRIPE_SECRET_KEY ? '✅ Found' : '❌ Not Found');
 console.log('====================================');
 
+const getBaseUrl = (url) => {
+  if (!url) return 'http://localhost:3000';
+  
+  // Remove trailing slash if present
+  url = url.endsWith('/') ? url.slice(0, -1) : url;
+  
+  // Ensure URL has proper protocol
+  if (!url.startsWith('http://') && !url.startsWith('https://')) {
+    url = `https://${url}`;
+  }
+  
+  return url;
+};
+
+
 const sessionsStore = new Map();
 
 // Helper function to format currency

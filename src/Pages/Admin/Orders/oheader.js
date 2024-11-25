@@ -1,17 +1,21 @@
 import React from 'react';
 
-const OrdersHeader = ({ setIsAdding, setIsAuthenticated }) => {
+const OrdersHeader = ({ setIsChecking, setIsAuthenticated }) => {
   return (
     <header>
-      <h1 className="OrdersMngHeader">Orders Management Dashboard</h1>
+      <h1 className="UsrMngSoftHeader">Order Management Dashboard</h1>
       <div style={{ marginTop: '30px', marginBottom: '18px' }}>
-        <button className="OrderCreateBtn" onClick={() => setIsAdding(true)}>
-          Orphaned Transaction Check
+        <button 
+          className="UsrCreateBtn" 
+          onClick={() => setIsChecking(true)}
+        >
+          Check Orphaned Orders
         </button>
       </div>
     </header>
   );
 };
+
 export default OrdersHeader;
 
 // const OrdersHeader = () => {
@@ -20,7 +24,7 @@ export default OrdersHeader;
 //         <h1 className="OrderMngHeader">Orders Management Dashboard</h1>
 //         <div style={{ marginTop: '30px', marginBottom: '18px' }}>
 //           <span className="OrderInfoText">
-//             Orders are automatically created through checkout
+//             Orders are automatically created through Checkingout
 //           </span>
 //         </div>
 //       </header>
