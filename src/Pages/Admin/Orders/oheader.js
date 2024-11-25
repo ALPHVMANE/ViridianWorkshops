@@ -5,12 +5,12 @@ const OrdersHeader = ({ setIsChecking, setIsAuthenticated }) => {
     <header>
       <h1 className="UsrMngSoftHeader">Order Management Dashboard</h1>
       <div style={{ marginTop: '30px', marginBottom: '18px' }}>
-        <button 
+        {/* <button 
           className="UsrCreateBtn" 
           onClick={() => setIsChecking(true)}
         >
           Check Orphaned Orders
-        </button>
+        </button> */}
       </div>
     </header>
   );

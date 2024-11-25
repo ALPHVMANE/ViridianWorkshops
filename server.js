@@ -15,21 +15,6 @@ console.log('====================================');
 console.log('SECRET_STRIPE_KEY:', process.env.REACT_APP_STRIPE_SECRET_KEY ? '✅ Found' : '❌ Not Found');
 console.log('====================================');
 
-const getBaseUrl = (url) => {
-  if (!url) return 'http://localhost:3000';
-  
-  // Remove trailing slash if present
-  url = url.endsWith('/') ? url.slice(0, -1) : url;
-  
-  // Ensure URL has proper protocol
-  if (!url.startsWith('http://') && !url.startsWith('https://')) {
-    url = `https://${url}`;
-  }
-  
-  return url;
-};
-
-
 const sessionsStore = new Map();
 
 // Helper function to format currency
@@ -122,22 +107,65 @@ app.get('/checkout-session/:sessionId', async (req, res) => {
 });
 
 
-// // Get recent sessions
-// app.get('/checkout-session/recent', async (req, res) => {
-//   try {
-//     const sevenDaysAgo = Math.floor(Date.now() / 1000) - (7 * 24 * 60 * 60);
-    
-//     const sessions = await stripe.checkout.sessions.list({
-//       created: { gte: sevenDaysAgo },
-//       limit: 100,
-//       expand: ['line_items']
-//     });
 
-//     res.json(sessions.data);
-//   } catch (error) {
-//     console.error('Error fetching recent sessions:', error);
-//     res.status(500).json({ error: error.message });
-//   }
-// });
+// Get recent sessions + payment
+app.get('/payment-status/check', async (req, res) => {
+  try {
+    const sevenDaysAgo = Math.floor(Date.now() / 1000) - (7 * 24 * 60 * 60);
+
+    const paymentIntents = await stripe.paymentIntents.list({
+      created: { gte: sevenDaysAgo },
+      limit: 100,
+      expand: ['data.payment_method']
+    });
+
+    const sessions = await Promise.all(
+      paymentIntents.data.map(async pi => {
+        try {
+          const sessions = await stripe.checkout.sessions.list({
+            payment_intent: pi.id,
+            expand: ['data.line_items', 'data.customer_details']
+          });
+          
+          const sessionDetails = await stripe.checkout.sessions.retrieve(
+            sessions.data[0]?.id,
+            {
+              expand: ['line_items.data.price.product', 'customer_details']
+            }
+          );
+
+          return {
+            paymentIntentId: pi.id,
+            sessionId: sessionDetails?.id,
+            amount: pi.amount / 100,
+            status: pi.status,
+            created: new Date(pi.created * 1000).toLocaleString(),
+            currency: pi.currency,
+            customer_details: sessionDetails?.customer_details,
+            line_items: sessionDetails?.line_items?.data.map(item => ({
+              description: item.price?.product?.name,
+              price: {
+                unit_amount: item.price?.unit_amount,
+                product: item.price?.product?.id
+              },
+              quantity: item.quantity
+            }))
+          };
+        } catch (err) {
+          console.error(`Error with payment intent ${pi.id}:`, err);
+          return null;
+        }
+      })
+    );
+
+    res.json({
+      total_payments: paymentIntents.data.length,
+      sessions: sessions.filter(Boolean)
+    });
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
 
 app.listen(5252, () => console.log(`Running on port 5252 (ctrl + click): ${process.env.REACT_APP_BACKEND_URL}`));

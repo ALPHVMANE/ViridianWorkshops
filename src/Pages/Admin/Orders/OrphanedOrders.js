@@ -1,162 +1,158 @@
-// src/utils/AdminTransactions.js
-import { ref, get, push, serverTimestamp } from 'firebase/database';
-import { db } from '../../../Config/Firebase';
+// import { ref, get, push, serverTimestamp } from 'firebase/database';
+// import React, { useState, useEffect } from 'react';
+// import { db } from '../../../Config/Firebase';
+// import checkUserRole from '../../../Utilities/CheckUserRole';
+// import Swal from 'sweetalert2';
 
-const generateOrphanedOrderId = async () => {
-  try {
-    // Get all existing orders
-    const ordersRef = ref(db, 'orders');
-    const ordersSnapshot = await get(ordersRef);
-    const orders = ordersSnapshot.val() || {};
+// const generateOrderId = async () => {
+//   try {
+//     const ordersRef = ref(db, 'orders');
+//     const ordersSnapshot = await get(ordersRef);
+//     const orders = ordersSnapshot.val() || {};
+    
+//     let maxNumber = 0;
+//     Object.values(orders).forEach(order => {
+//       if (order.orderNumber.startsWith('00')) {
+//         const numberPart = parseInt(order.orderNumber.slice(3), 10);
+//         if (!isNaN(numberPart) && numberPart > maxNumber) {
+//           maxNumber = numberPart;
+//         }
+//       }
+//     });
 
-    // Find the highest orphaned order number
-    let maxOrphanNumber = 0;
-    Object.values(orders).forEach(order => {
-      if (order.orderId.startsWith('00')) {
-        const numberPart = parseInt(order.orderId.slice(3), 10);
-        if (!isNaN(numberPart) && numberPart > maxOrphanNumber) {
-          maxOrphanNumber = numberPart;
-        }
-      }
-    });
+//     return `00${(maxNumber + 1).toString().padStart(6, '0')}`;
+//   } catch (error) {
+//     console.error('Error generating order ID:', error);
+//     throw error;
+//   }
+// };
 
-    // Generate new number and pad it
-    const newNumber = (maxOrphanNumber + 1).toString().padStart(6, '0');
-    return `00${newNumber}`;
-  } catch (error) {
-    console.error('Error generating orphaned order ID:', error);
-    throw error;
-  }
-};
+// const createOrder = async (session, adminUserId) => {
+//   try {
+//     const ordersRef = ref(db, 'orders');
+//     const orderNumber = await generateOrderId();
 
-const checkAdminRole = async (userId) => {
-  try {
-    const userRoleRef = ref(db, `users/${userId}`);
-    const snapshot = await get(userRoleRef);
-    if (snapshot.exists()) {
-      const userData = snapshot.val();
-      return userData.role === 'admin';
-    }
-    return false;
-  } catch (error) {
-    console.error('Error checking admin role:', error);
-    return false;
-  }
-};
+//     const orderData = {
+//       orderNumber,
+//       userId: session.paymentIntentId || 'unknown',
+//       userEmail: session.customer_details?.email || 'N/A',
+//       orderDate: serverTimestamp(),
+//       products: session.line_items?.map(item => ({
+//         productId: item.price?.product || 'unknown',
+//         name: item.description,
+//         quantity: item.quantity,
+//         price: item.price?.unit_amount / 100,
+//         subtotal: (item.price?.unit_amount * item.quantity) / 100
+//       })) || [],
+//       payment: {
+//         sessionId: session.sessionId,
+//         status: 'completed', 
+//         amount: session.amount,
+//         currency: 'cad', // Default to CAD
+//         created: session.created,
+//         paymentIntentId: session.paymentIntentId,
+//         refunded: false,
+//         refundAmount: 0
+//       },
+//       status: 'completed', 
+//       orderStatus: 'pending',
+//       totalAmount: session.amount,
+//       metadata: {
+//         createdAt: serverTimestamp(),
+//         platform: 'web',
+//         isOrphaned: true,
+//         recoveredAt: serverTimestamp(),
+//         recoveredBy: adminUserId,
+//         orderType: 'orphaned'
+//       }
+//     };
 
-export const CheckOrphanedTransactions = async (currentUser) => {
-  try {
-    // Verify admin privileges by checking database
-    const isAdmin = await checkAdminRole(currentUser.uid);
-    if (!isAdmin) {
-      throw new Error('Unauthorized: Admin privileges required');
-    }
+//     const newOrderRef = await push(ordersRef, orderData);
+//     return { ...orderData, key: newOrderRef.key };
+//   } catch (error) {
+//     console.error('Error creating order:', error);
+//     throw error;
+//   }
+// };
 
-    // Get all orders from Firebase
-    const ordersRef = ref(db, 'orders');
-    const ordersSnapshot = await get(ordersRef);
-    const existingOrders = ordersSnapshot.val() || {};
+// const CheckOrderTransaction = () => {
+//   const [username, setUsername] = useState('');
+//   const [role, setRole] = useState('');
 
-    // Get recent sessions from Stripe (last 7 days)
-    const response = await fetch('/checkout-session/recent');
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const sessions = await response.json();
+//   useEffect(() => {
+//     const unsubscribe = checkUserRole(setUsername, setRole);
+//     return () => unsubscribe();
+//   }, []);
 
-    const orphanedSessions = [];
-    const processedSessions = [];
+//   useEffect(() => {
+//     const checkTransactions = async () => {
+//       if (role !== 'admin') {
+//         Swal.fire({
+//           title: 'Error',
+//           text: 'Unauthorized: Admin privileges required',
+//           icon: 'error'
+//         });
+//         return;
+//       }
 
-    // Check each session
-    for (const session of sessions) {
-      if (session.payment_status === 'paid') {
-        // Check if we already have an order for this session
-        const hasOrder = Object.values(existingOrders).some(
-          order => order.payment?.sessionId === session.id
-        );
+//       try {
+//         // Get existing orders from Firebase
+//         const ordersRef = ref(db, 'orders');
+//         const ordersSnapshot = await get(ordersRef);
+//         const existingOrders = ordersSnapshot.val() || {};
 
-        if (!hasOrder) {
-          console.log(`Found orphaned transaction: ${session.id}`);
-          orphanedSessions.push(session);
-          
-          // Create order for orphaned transaction
-          await createOrphanedOrder(session, currentUser.uid);
-          processedSessions.push(session.id);
-        }
-      }
-    }
+//         // Fetch sessions from backend
+//         const baseUrl = process.env.REACT_APP_BACKEND_URL?.replace(/\/+$/, '');
+//         const response = await fetch(`${baseUrl}/payment-status/check`);
+        
+//         if (!response.ok) {
+//           throw new Error(`Server error: ${response.status}`);
+//         }
 
-    return {
-      success: true,
-      found: orphanedSessions.length,
-      processed: processedSessions,
-      orphanedSessions
-    };
+//         const { sessions } = await response.json();
+//         const orphanedSessions = [];
+//         const processedSessions = [];
 
-  } catch (error) {
-    console.error('Error checking orphaned transactions:', error);
-    return {
-      success: false,
-      error: error.message,
-      found: 0,
-      processed: []
-    };
-  }
-};
+//         // Check for orphaned sessions
+//         for (const session of sessions) {
+//           if (session.status === 'succeeded') {
+//             const hasOrder = Object.values(existingOrders).some(
+//               order => order.payment?.sessionId === session.sessionId
+//             );
 
-const createOrphanedOrder = async (session, adminUserId) => {
-  try {
-    const ordersRef = ref(db, 'orders');
-    // Generate unique orphaned order ID starting with '000'
-    const orderNumber = await generateOrphanedOrderId();
+//             if (!hasOrder) {
+//               orphanedSessions.push(session);
+//               try {
+//                 const orderData = await createOrder(session, username);
+//                 processedSessions.push(session.sessionId);
+//               } catch (orderError) {
+//                 console.error('Error creating order for session', session.sessionId, orderError);
+//               }
+//             }
+//           }
+//         }
 
-    // Try to get user data if customer email exists
-    let userData = null;
-    if (session.customer_details?.email) {
-      const usersRef = ref(db, 'users');
-      const usersSnapshot = await get(usersRef);
-      const users = usersSnapshot.val() || {};
-      userData = Object.values(users).find(
-        user => user.email === session.customer_details.email
-      );
-    }
+//         Swal.fire({
+//           title: 'Success',
+//           text: `Found ${orphanedSessions.length} orphaned orders, processed ${processedSessions.length}`,
+//           icon: 'success'
+//         });
 
-    const orderData = {
-      orderId: orderNumber, // Will be like '000000001', '000000002', etc.
-      userId: userData?.uid || session.customer,
-      userEmail: userData?.email || session.customer_details?.email,
-      orderDate: serverTimestamp(),
-      products: session.line_items.data.map(item => ({
-        productId: item.price.product,
-        name: item.description,
-        quantity: item.quantity,
-        price: item.price.unit_amount / 100,
-        subtotal: (item.price.unit_amount * item.quantity) / 100
-      })),
-      payment: {
-        sessionId: session.id,
-        status: session.payment_status,
-        amount: session.amount_total / 100,
-        currency: session.currency,
-        created: new Date(session.created * 1000).toISOString()
-      },
-      orderStatus: 'processing',
-      totalAmount: session.amount_total / 100,
-      metadata: {
-        createdAt: serverTimestamp(),
-        platform: 'web',
-        isOrphaned: true,
-        recoveredAt: serverTimestamp(),
-        recoveredBy: adminUserId,
-        orderType: 'orphaned'
-      }
-    };
+//       } catch (error) {
+//         Swal.fire({
+//           title: 'Error',
+//           text: error.message,
+//           icon: 'error'
+//         });
+//       }
+//     };
 
-    await push(ordersRef, orderData);
-    return orderData;
-  } catch (error) {
-    console.error('Error creating orphaned order:', error);
-    throw error;
-  }
-};
-export default CheckOrphanedTransactions;
+//     if (role === 'admin') {
+//       checkTransactions();
+//     }
+//   }, [role, username]);
+
+//   return null;
+// };
+
+// export default CheckOrderTransaction;
