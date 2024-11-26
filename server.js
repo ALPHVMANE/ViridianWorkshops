@@ -5,6 +5,13 @@ const express = require('express');
 const cors = require('cors');
 const stripe = require('stripe')(process.env.REACT_APP_STRIPE_SECRET_KEY);
 const app = express();
+const admin = require('firebase-admin');
+const serviceAccount = require('./src/Config/firebase-admin.json');
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: process.env.REACT_APP_DATABASE_URL
+});
 
 // Middleware
 app.use(express.json());
@@ -16,6 +23,17 @@ console.log('SECRET_STRIPE_KEY:', process.env.REACT_APP_STRIPE_SECRET_KEY ? '✅
 console.log('====================================');
 
 const sessionsStore = new Map();
+
+app.post('/api/deleteUser', async (req, res) => {
+  try {
+    const { userId } = req.body;
+    await admin.auth().deleteUser(userId);
+    await admin.database().ref(`users/${userId}`).remove();
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 // Helper function to format currency
 const formatCurrency = (amount, currency = 'cad') => {
@@ -105,8 +123,6 @@ app.get('/checkout-session/:sessionId', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
-
-
 
 // Get recent sessions + payment
 app.get('/payment-status/check', async (req, res) => {

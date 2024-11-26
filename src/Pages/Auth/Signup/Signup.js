@@ -5,6 +5,7 @@ import { auth, db } from '../../../Config/Firebase';
 import { ref, set } from 'firebase/database';
 import { Link, useNavigate } from 'react-router-dom';
 
+
 const Signup = () => {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
