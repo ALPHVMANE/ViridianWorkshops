@@ -12,6 +12,7 @@ const Success = () => {
   const navigate = useNavigate();
   const [orderInfo, setOrderInfo] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -26,49 +27,74 @@ const Success = () => {
         const sessionId = urlParams.get('session_id');
 
         if (!sessionId) {
+          console.error('No session ID found in URL');
           navigate('/');
           return;
         }
 
-        // Get session details from Stripe
-        const response = await fetch(`${BACKEND_URL}/checkout-session/${sessionId}`);
-        if (!response.ok) throw new Error('Failed to fetch session');
-        const session = await response.json();
-
-        // Create order in Firebase
-        const ordersRef = ref(db, 'orders');
-        const orderData = {
-          userId: user.uid,
-          userEmail: user.email,
-          orderDate: serverTimestamp(),
-          payment: {
-            sessionId: session.id,
-            status: session.payment_status,
-            amount: session.amount_total / 100,
-            currency: session.currency
+        console.log('Fetching session details for:', sessionId);
+        
+        // Get session details from Stripe with error handling
+        const response = await fetch(`${BACKEND_URL}/checkout-session/${sessionId}`, {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
           },
-          products: session.line_items.data.map(item => ({
-            name: item.description,
-            quantity: item.quantity,
-            price: item.amount_total / 100
-          })),
-          status: 'completed',
-          orderNumber: Date.now().toString()
-        };
-
-        await push(ordersRef, orderData);
-
-        setOrderInfo({
-          email: user.email,
-          orderNumber: orderData.orderNumber,
-          totalAmount: session.amount_total / 100
         });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Failed to fetch session');
+        }
+
+        const session = await response.json();
+        console.log('Session data received:', session);
+
+        if (!session || !session.payment_intent) {
+          throw new Error('Invalid session data received');
+        }
+
+        // Create order in Firebase with try-catch
+        try {
+          const ordersRef = ref(db, 'orders');
+          const orderData = {
+            userId: user.uid,
+            userEmail: user.email,
+            orderDate: serverTimestamp(),
+            payment: {
+              sessionId: session.id,
+              status: session.payment_status,
+              amount: session.amount_total / 100,
+              currency: session.currency
+            },
+            products: session.line_items.data.map(item => ({
+              name: item.description || item.price?.product?.name,
+              quantity: item.quantity,
+              price: (item.amount_total || item.price?.unit_amount) / 100
+            })),
+            status: 'completed',
+            orderNumber: `ORD-${Date.now()}`
+          };
+
+          await push(ordersRef, orderData);
+          console.log('Order created in Firebase:', orderData.orderNumber);
+
+          setOrderInfo({
+            email: user.email,
+            orderNumber: orderData.orderNumber,
+            totalAmount: session.amount_total / 100
+          });
+        } catch (firebaseError) {
+          console.error('Firebase Error:', firebaseError);
+          throw new Error('Failed to save order details');
+        }
 
       } catch (error) {
-        console.error('Error:', error);
-        navigate('/error', {
-          state: { message: 'Error processing your order. Please contact support.' }
-        });
+        console.error('Error processing order:', error);
+        setError(error.message);
+        // Don't navigate away immediately, show error in UI
+        setOrderInfo(null);
       } finally {
         setLoading(false);
       }
@@ -81,7 +107,26 @@ const Success = () => {
     return (
       <div className="success-container">
         <div className="success-card">
-          <div className="loading-spinner">Loading...</div>
+          <div className="loading-spinner">Processing your order...</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="success-container">
+        <div className="success-card error">
+          <h2>Something went wrong</h2>
+          <p>{error}</p>
+          <div className="success-actions">
+            <Link to="/contact" className="success-button primary">
+              Contact Support
+            </Link>
+            <Link to="/" className="success-button secondary">
+              Return Home
+            </Link>
+          </div>
         </div>
       </div>
     );
@@ -110,7 +155,7 @@ const Success = () => {
 
         <div className="success-details">
           <p>An email confirmation has been sent to {orderInfo.email}</p>
-          <p>Order number: #{orderInfo.orderNumber}</p>
+          <p>Order number: {orderInfo.orderNumber}</p>
           <p>Total amount: ${orderInfo.totalAmount.toFixed(2)}</p>
         </div>
 

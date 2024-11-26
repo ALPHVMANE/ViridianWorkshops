@@ -13,6 +13,24 @@ admin.initializeApp({
   databaseURL: process.env.REACT_APP_DATABASE_URL
 });
 
+const getBaseUrl = (url) => {
+  console.log('Incoming URL:', url); // Debug log
+  
+  if (!url) {
+    console.log('No URL provided, using default');
+    return 'http://localhost:3000';
+  }
+  
+  try {
+    // Validate URL format
+    new URL(url);
+    return url.endsWith('/') ? url.slice(0, -1) : url;
+  } catch (error) {
+    console.error('Invalid URL format:', error);
+    return 'http://localhost:3000';
+  }
+};
+
 // Middleware
 app.use(express.json());
 app.use(cors());
@@ -83,13 +101,20 @@ app.post('/create-checkout-session', async (req, res) => {
       quantity: item.qty,
     }));
 
-    const baseUrl = getBaseUrl(process.env.FRONTEND_URL);
+    const baseUrl = getBaseUrl(process.env.REACT_APP_FRONTEND_URL);
+    console.log('Base URL:', baseUrl);
+
+    const successUrl = new URL('/success', baseUrl).toString();
+    const cancelUrl = new URL('/cart-products', baseUrl).toString();
+    
+    console.log('Success URL:', successUrl);
+    console.log('Cancel URL:', cancelUrl);
     
     const session = await stripe.checkout.sessions.create({
       line_items: lineItems,
       mode: 'payment',
-      success_url: `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${baseUrl}/cart-products`,
+      success_url: `${successUrl}?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: cancelUrl,
     });
 
     logOrderDetails(session, products);
